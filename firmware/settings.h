@@ -2,10 +2,9 @@
 #ifndef _SETTINGS_H_
 #define _SETTINGS_H_
 
-// Keyboard Ouput Modes (PS2, XT, AMSTRAD)
+// Keyboard Ouput Modes (PS2, XT)
 #define MODE_PS2 0
 #define MODE_XT 1
-#define MODE_AMSTRAD 2
 
 typedef struct Settings {
 

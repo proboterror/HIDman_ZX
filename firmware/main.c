@@ -11,7 +11,6 @@
 #include "menu.h"
 #include "mouse.h"
 #include "xt.h"
-#include "amstrad.h"
 #include "pwm.h"
 #include "keyboardled.h"
 #include "dataflash.h"
@@ -102,12 +101,6 @@ void EveryMillisecond(void) {
 				P0 &= ~0b00010000;
 				P0 &= ~0b00100000;
 			break;
-			case MODE_AMSTRAD:
-				// white
-				P0 &= ~0b00010000;
-				P0 &= ~0b00100000;
-				P0 &= ~0b01000000;
-			break;
 		}
 
 #else
@@ -126,13 +119,6 @@ void EveryMillisecond(void) {
 					// orange
 					SetPWM2Dat(0x10);
 					SetPWM1Dat(0x40);
-				break;
-				case MODE_AMSTRAD:
-					// white
-					SetPWM1Dat(0x30);
-					SetPWM2Dat(0x20);
-					T3_FIFO_L = 0x3F;
-					T3_FIFO_H = 0;
 				break;
 
 			}
@@ -156,10 +142,6 @@ void mTimer0Interrupt(void) __interrupt(INT_NO_TMR0)
 
 			case (MODE_XT):
 				XTProcessPort();
-				break;
-
-			case (MODE_AMSTRAD):
-				AmstradProcessPort();
 				break;
 		}
 
