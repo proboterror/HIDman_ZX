@@ -659,7 +659,7 @@ void HandleReceived(uint8_t port)
 			// ID
 			case 0xF2:
 				SimonSaysSendMouse1(0xFA); // ACK
-				SimonSaysSendMouse1((&OutputMice[MOUSE_PORT_PS2])->Ps2Type); // Mouse type
+				SimonSaysSendMouse1(OutputMice.Ps2Type); // Mouse type
 				break;
 
 			// Enable Reporting

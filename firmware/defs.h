@@ -7,10 +7,6 @@
 #include "andyalloc.h"
 #include "linkedlist.h"
 
-#if defined(BOARD_AXP)
-	#define OPT_SERIAL_MOUSE
-#endif
-
 //packet id
 #define ID_USB_KEYBOARD   0xA0
 #define ID_USB_MOUSE      0xA1

@@ -225,11 +225,11 @@ void Menu_Task(void)
                     break;
 
                 case KEY_3:
-                    SendKeyboardString("Type           %u\n", (&OutputMice[MOUSE_PORT_PS2])->Ps2Type);
-                    SendKeyboardString("Rate           %u\n", (&OutputMice[MOUSE_PORT_PS2])->Ps2Rate);
-                    SendKeyboardString("Resolution     %u\n", (&OutputMice[MOUSE_PORT_PS2])->Ps2Resolution);
-                    SendKeyboardString("Scaling        %u\n", (&OutputMice[MOUSE_PORT_PS2])->Ps2Scaling);
-                    SendKeyboardString("Data reporting %u\n", (&OutputMice[MOUSE_PORT_PS2])->Ps2DataReporting);
+                    SendKeyboardString("Type           %u\n", OutputMice.Ps2Type);
+                    SendKeyboardString("Rate           %u\n", OutputMice.Ps2Rate);
+                    SendKeyboardString("Resolution     %u\n", OutputMice.Ps2Resolution);
+                    SendKeyboardString("Scaling        %u\n", OutputMice.Ps2Scaling);
+                    SendKeyboardString("Data reporting %u\n", OutputMice.Ps2DataReporting);
                     SendKeyboardString("\nCommand buffer\n");
                     for (UINT8 i = 0; i < MOUSE_BUFFER_SIZE; i++)
                     {

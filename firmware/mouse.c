@@ -20,32 +20,24 @@
 #include "defs.h"
 #include "system.h"
 
-#if defined(OPT_SERIAL_MOUSE)
-	__xdata uint8_t serialMouseMode = SERIAL_MOUSE_MODE_OFF;
-	__xdata char serialMouseType = '3'; // Logitech 3 button: '3', Microsoft: 'M'
-#endif
-
 __xdata int16_t Ps2MouseScalingTable[] = {-9, -6, -3, -1, -1, 0, 1, 1, 3, 6, 9};
 
-__xdata MOUSE OutputMice[2];
+__xdata MOUSE OutputMice;
 
 void InitMice(void)
 {
-    memset(OutputMice, 0x00, sizeof(OutputMice));
+    memset(&OutputMice, 0x00, sizeof(OutputMice));
 	Ps2MouseSetType(MOUSE_PS2_TYPE_STANDARD);
 	Ps2MouseSetDefaults();
 }
 __xdata uint8_t updates = 0;
 void MouseMove(int32_t DeltaX, int32_t DeltaY, int32_t DeltaZ)
 {
-    for (int x = 0; x < 2; x++)
-    {
-        MOUSE *m = &OutputMice[x];
-        m->DeltaX += DeltaX;
-        m->DeltaY += DeltaY;
-        m->DeltaZ += DeltaZ;
-        m->NeedsUpdating = 1;
-    }
+    MOUSE *m = &OutputMice;
+    m->DeltaX += DeltaX;
+    m->DeltaY += DeltaY;
+    m->DeltaZ += DeltaZ;
+    m->NeedsUpdating = 1;
 }
 
 
@@ -71,11 +63,11 @@ void GetMouseAxisUpdate(MOUSE *m, int16_t* Axis, int16_t* Value, int16_t Min, in
 	*Axis -= *Value << Downscale;	
 }
 
-uint8_t GetMouseUpdate(uint8_t MouseNo, int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t *Z, uint8_t *Buttons, bool Accelerate, uint8_t Downscale)
+uint8_t GetMouseUpdate(int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t *Z, uint8_t *Buttons, bool Accelerate, uint8_t Downscale)
 {
-    MOUSE *m = &OutputMice[MouseNo];
+    MOUSE *m = &OutputMice;
 	
-	if (MouseNo == MOUSE_PORT_PS2 && m->Ps2DataReporting == MOUSE_PS2_REPORTING_OFF)
+	if (m->Ps2DataReporting == MOUSE_PS2_REPORTING_OFF)
 	{
 		// ps2 mouse and data reporting is off - no matter if update is needed or not, we do not give one
 		return 0;
@@ -91,8 +83,7 @@ uint8_t GetMouseUpdate(uint8_t MouseNo, int16_t Min, int16_t Max, int16_t *X, in
 		GetMouseAxisUpdate(m, &m->DeltaY, Y, Min, Max, Downscale);
 		
 		// get delta for z also for ps2 intellimouse 
-		if (MouseNo == MOUSE_PORT_PS2)
-			GetMouseAxisUpdate(m, &m->DeltaZ, Z, -8, 7, 0);
+		GetMouseAxisUpdate(m, &m->DeltaZ, Z, -8, 7, 0);
 
 		// get buttons
         *Buttons = m->Buttons;
@@ -112,40 +103,31 @@ uint8_t GetMouseUpdate(uint8_t MouseNo, int16_t Min, int16_t Max, int16_t *X, in
 
 void MouseClick(uint8_t Button)
 {
-    for (int x = 0; x < 2; x++)
-    {
-        MOUSE *m = &OutputMice[x];
-        m->Buttons |= 1 << Button;
-        m->NeedsUpdating = 1;
-    }
+    MOUSE *m = &OutputMice;
+    m->Buttons |= 1 << Button;
+    m->NeedsUpdating = 1;
 }
 
 void MouseUnclick(uint8_t Button)
 {
-    for (int x = 0; x < 2; x++)
-    {
-        MOUSE *m = &OutputMice[x];
-        m->Buttons &= ~(1 << Button);
-        m->NeedsUpdating = 1;
-    }
+    MOUSE *m = &OutputMice;
+    m->Buttons &= ~(1 << Button);
+    m->NeedsUpdating = 1;
 }
 
 void MouseSet(uint8_t Button, uint8_t value)
 {
-    for (int x = 0; x < 2; x++)
-    {
-        MOUSE *m = &OutputMice[x];
-        if (value)
-            m->Buttons |= 1 << Button;
-        else
-            m->Buttons &= ~(1 << Button);
-        m->NeedsUpdating = 1;
-    }
+    MOUSE *m = &OutputMice;
+    if (value)
+        m->Buttons |= 1 << Button;
+    else
+        m->Buttons &= ~(1 << Button);
+    m->NeedsUpdating = 1;
 }
 
 void Ps2MouseSetDelta(uint8_t DeltaX, uint8_t DeltaY, uint8_t DeltaZ)
 {
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->DeltaX = DeltaX;
 	m->DeltaY = DeltaY;
 	m->DeltaZ = DeltaZ;
@@ -153,37 +135,37 @@ void Ps2MouseSetDelta(uint8_t DeltaX, uint8_t DeltaY, uint8_t DeltaZ)
 
 void Ps2MouseSetType(uint8_t Type)
 {
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->Ps2Type = Type;
 }
 
 void Ps2MouseSetMode(uint8_t Mode) {
 	// TODO: implement (does anything use remote or wrap mode?)
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->Ps2Mode = Mode;
 	Ps2MouseSetDelta(0, 0, 0);
 }
 
 void Ps2MouseSetRate(uint8_t Rate) {
 	// TODO: implement
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->Ps2Rate = Rate;
 	Ps2MouseSetDelta(0, 0, 0);
 }
 
 void Ps2MouseSetResolution(uint8_t Resolution) {
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->Ps2Resolution = Resolution;
 	Ps2MouseSetDelta(0, 0, 0);
 }
 
 void Ps2MouseSetScaling(uint8_t Scaling) {
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->Ps2Scaling = Scaling;
 }
 
 void Ps2MouseSetReporting(bool Reporting) {
-	MOUSE *m = &OutputMice[MOUSE_PORT_PS2];
+	MOUSE *m = &OutputMice;
 	m->Ps2DataReporting = Reporting;
 	Ps2MouseSetDelta(0, 0, 0);
 }
@@ -198,7 +180,7 @@ void Ps2MouseSetDefaults(void) {
 
 __xdata uint8_t PrevButtons = 0;
 
-__xdata MOUSE *ps2Mouse = &OutputMice[MOUSE_PORT_PS2];
+__xdata MOUSE *ps2Mouse = &OutputMice;
 
 void HandleMouse(void) {
 	
@@ -209,7 +191,7 @@ void HandleMouse(void) {
 		// make sure there's space in the buffer before we pop any mouse updates
 		if ((ports[PORT_MOUSE].sendBuffEnd + 1) % 8 != ports[PORT_MOUSE].sendBuffStart)
 		{
-			if (GetMouseUpdate(0, -255, 255, &X, &Y, &Z, &Buttons, (ps2Mouse->Ps2Scaling==MOUSE_PS2_SCALING_2X), (3-ps2Mouse->Ps2Resolution)))
+			if (GetMouseUpdate(-255, 255, &X, &Y, &Z, &Buttons, (ps2Mouse->Ps2Scaling==MOUSE_PS2_SCALING_2X), (3-ps2Mouse->Ps2Resolution)))
 			{
 				// ps2 is inverted compared to USB
 				Y = -Y;
@@ -241,48 +223,4 @@ void HandleMouse(void) {
 				}
 			}
 		}
-
-#if defined(OPT_SERIAL_MOUSE)
-		if (serialMouseMode == SERIAL_MOUSE_MODE_INIT) {
-			// Delay a bit and send 'M' to identify as a mouse
-			mDelaymS(5);
-			CH559UART1SendByte('M');
-			if (serialMouseType != 'M') {
-				// Delay a bit longer and send '2' or '3' to further identify # of buttons
-				mDelaymS(10);
-				CH559UART1SendByte(serialMouseType);
-			}
-			serialMouseMode = SERIAL_MOUSE_MODE_ACTIVE;
-		}
-		// Send Serial Mouse Packet if necessary
-		// make sure there's space in the fifo before we pop any mouse updates
-		else if (serialMouseMode == SERIAL_MOUSE_MODE_ACTIVE && (/*CH559UART1_FIFO_CNT >= 3 || */ SER1_LSR & bLSR_T_FIFO_EMP))
-		{
-			if (GetMouseUpdate(1, -127, 127, &X, &Y, &Z, &Buttons, false, 0))
-			{
-				byte1 = 0b11000000 |			  // bit6 always set
-						((Buttons & 0x01) << 5) | // left button
-						((Buttons & 0x02) << 3) | // right button
-						((Y >> 4) & 0b00001100) | // top two bits of Y
-						((X >> 6) & 0b00000011);  // top two bits of X
-
-				byte2 = 0b10000000 | (X & 0x3F); // rest of X
-				byte3 = 0b10000000 | (Y & 0x3F); // rest of Y
-
-				CH559UART1SendByte(byte1);
-				CH559UART1SendByte(byte2);
-				CH559UART1SendByte(byte3);
-
-				if (serialMouseType == '3')
-				{
-					if (Buttons & 0x04)
-						CH559UART1SendByte(0b10100000);
-					else if (PrevButtons & 0x04)
-						CH559UART1SendByte(0b10000000);
-
-					PrevButtons = Buttons;
-				}
-			}
-		}
-#endif
 }

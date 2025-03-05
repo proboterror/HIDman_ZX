@@ -2,10 +2,6 @@
 #ifndef _MOUSE_H_
 #define _MOUSE_H_
 
-#define MOUSE_PORT_PS2 0
-#define MOUSE_PORT_SERIAL 1
-#define MOUSE_PORT_QUADRATURE 2 //or whatever
-
 #define MOUSE_PS2_TYPE_STANDARD 0
 #define MOUSE_PS2_TYPE_INTELLIMOUSE_3_BUTTON 3
 #define MOUSE_PS2_TYPE_INTELLIMOUSE_5_BUTTON 4
@@ -25,11 +21,6 @@
 
 #define MOUSE_PS2_REPORTING_OFF 0
 #define MOUSE_PS2_REPORTING_ON 1
-
-#define SERIAL_MOUSE_MODE_OFF    0
-#define SERIAL_MOUSE_MODE_RESET  1
-#define SERIAL_MOUSE_MODE_INIT   2
-#define SERIAL_MOUSE_MODE_ACTIVE 3
 
 typedef struct MOUSE {
 
@@ -55,11 +46,11 @@ typedef struct MOUSE {
 	
 } MOUSE;
 
-__xdata extern MOUSE OutputMice[];
+__xdata extern MOUSE OutputMice;
 
 void InitMice(void);
 void MouseMove(int32_t DeltaX, int32_t DeltaY, int32_t DeltaZ);
-uint8_t GetMouseUpdate(uint8_t MouseNo, int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t *Z, uint8_t *Buttons, bool Accelerate, uint8_t Downscale);
+uint8_t GetMouseUpdate(int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t *Z, uint8_t *Buttons, bool Accelerate, uint8_t Downscale);
 void MouseClick(uint8_t Button);
 void MouseUnclick(uint8_t Button);
 void MouseSet(uint8_t Button, uint8_t value);
