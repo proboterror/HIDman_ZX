@@ -147,9 +147,7 @@ int putchar(int c)
 	{
 		// capitals, hold shift first
 		if (c >= 0x41 && c <= 0x5A)
-			while (!SendKeyboard(
-				(FlashSettings->KeyboardMode == MODE_PS2) ? KEY_SET2_LSHIFT_MAKE : KEY_SET1_LSHIFT_MAKE))
-				;
+			while (!SendKeyboard(KEY_SET2_LSHIFT_MAKE));
 
 		// press the key
 		PressKey(c);
@@ -160,8 +158,7 @@ int putchar(int c)
 		// release shift
 		if (c >= 0x41 && c <= 0x5A)
 		{
-			while (!SendKeyboard(FlashSettings->KeyboardMode == MODE_PS2 ? KEY_SET2_LSHIFT_BREAK : KEY_SET1_LSHIFT_BREAK))
-				;
+			while (!SendKeyboard(KEY_SET2_LSHIFT_BREAK));
 		}
 	}
 	return c;

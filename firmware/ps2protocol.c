@@ -107,7 +107,7 @@ void HandleRepeats(void)
 	}
 	else if (RepeatState < RepeatRate)
 	{
-		SendKeyboard( FlashSettings->KeyboardMode == MODE_PS2 ? HIDtoSET2_Make[RepeatKey] : HIDtoSET1_Make[RepeatKey]);
+		SendKeyboard( HIDtoSET2_Make[RepeatKey] );
 		SetRepeatState(-1);
 	}
 }
@@ -420,7 +420,7 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 								//DEBUGOUT("\nSendn %x\n", hidcode);
 								// Make
 
-								SendKeyboard(FlashSettings->KeyboardMode == MODE_PS2 ? HIDtoSET2_Make[hidcode] : HIDtoSET1_Make[hidcode]);
+								SendKeyboard(HIDtoSET2_Make[hidcode]);
 								if (!(hidcode >= 0xE0 && hidcode <= 0xE7))
 								{
 									RepeatKey = hidcode;
@@ -446,7 +446,7 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 								if (hidcode == 0x48)
 									continue;
 
-								SendKeyboard(FlashSettings->KeyboardMode == MODE_PS2 ? HIDtoSET2_Break[hidcode] : HIDtoSET1_Break[hidcode]);
+								SendKeyboard(HIDtoSET2_Break[hidcode]);
 
 							}
 						}

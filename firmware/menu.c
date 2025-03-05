@@ -54,9 +54,7 @@ void SendKeyboardBuffer(void)
 
         // capitals, hold shift first
         if (currchar >= 0x41 && currchar <= 0x5A)
-            while (!SendKeyboard(
-                (FlashSettings->KeyboardMode == MODE_PS2) ? KEY_SET2_LSHIFT_MAKE : KEY_SET1_LSHIFT_MAKE))
-                ;
+            while (!SendKeyboard(KEY_SET2_LSHIFT_MAKE));
 
         // press the key
         PressKey(currchar);
@@ -67,8 +65,7 @@ void SendKeyboardBuffer(void)
         // release shift
         if (currchar >= 0x41 && currchar <= 0x5A)
         {
-            while (!SendKeyboard(FlashSettings->KeyboardMode == MODE_PS2 ? KEY_SET2_LSHIFT_BREAK : KEY_SET1_LSHIFT_BREAK))
-                ;
+            while (!SendKeyboard(KEY_SET2_LSHIFT_BREAK));
         }
         BufferIndex++;
     }
@@ -353,15 +350,6 @@ void inputProcess(void)
             if (menuState == MENU_STATE_DUMPING)
             {
                 // reenumerate = 1;
-            }
-            else
-            {
-                // cycle through modes on unpress of button
-                HMSettings.KeyboardMode++;
-                if (HMSettings.KeyboardMode > 2)
-                    HMSettings.KeyboardMode = 0;
-                SyncSettings();
-                ports[PORT_KEY].state = S_INIT;
             }
 
             // start the counter

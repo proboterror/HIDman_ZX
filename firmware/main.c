@@ -90,12 +90,8 @@ void EveryMillisecond(void) {
 #elif defined (BOARD_PS2)
 		P0 |= 0b01110000;
 
-		switch (FlashSettings->KeyboardMode) {
-			case MODE_PS2:
-				// blue
-				P0 &= ~0b01000000;
-			break;
-		}
+		// blue
+		P0 &= ~0b01000000;
 
 #else
 			SetPWM1Dat(0x00);
@@ -103,14 +99,9 @@ void EveryMillisecond(void) {
 			T3_FIFO_L = 0;
 			T3_FIFO_H = 0;
 
-			switch (FlashSettings->KeyboardMode){
-				case MODE_PS2:
-					// blue
-					T3_FIFO_L = 0xFF;
-					T3_FIFO_H = 0;
-				break;
-
-			}
+			// blue
+			T3_FIFO_L = 0xFF;
+			T3_FIFO_H = 0;
 #endif
 	}
 }
@@ -124,13 +115,8 @@ void mTimer0Interrupt(void) __interrupt(INT_NO_TMR0)
 
 	if (OutputsEnabled) {
 
-		switch (FlashSettings->KeyboardMode) {
-			case (MODE_PS2):
-				PS2ProcessPort(PORT_KEY);
-				break;
-		}
+		PS2ProcessPort(PORT_KEY);
 
-		// May as well do this even in XT mode, can't hurt
 		PS2ProcessPort(PORT_MOUSE);
 
 		// Handle keyboard typematic repeat timers

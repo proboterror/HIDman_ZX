@@ -2,9 +2,6 @@
 #ifndef _SETTINGS_H_
 #define _SETTINGS_H_
 
-// Keyboard Ouput Modes (PS2)
-#define MODE_PS2 0
-
 typedef struct Settings {
 
     // will be set to 0x54178008 to make sure flash is intact
@@ -27,9 +24,6 @@ typedef struct Settings {
 
     // Output debug info to serial port
     bool SerialDebugOutput;
-
-    // What type of computer the keyboard is plugged into (i.e. PS2 or XT)
-    uint8_t KeyboardMode;
 
 } Settings;
 

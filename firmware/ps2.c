@@ -103,16 +103,12 @@ bool SendKeyboard(const uint8_t *chunk)
 
 void PressKey(uint8_t currchar)
 {
-    while (!SendKeyboard(
-        FlashSettings->KeyboardMode == MODE_PS2 ? HIDtoSET2_Make[ASCIItoHID[currchar]] : HIDtoSET1_Make[ASCIItoHID[currchar]]))
-        ;
+    while (!SendKeyboard(HIDtoSET2_Make[ASCIItoHID[currchar]]));
 }
 
 void ReleaseKey(uint8_t currchar)
 {
-    while (!SendKeyboard(
-        FlashSettings->KeyboardMode == MODE_PS2 ? HIDtoSET2_Break[ASCIItoHID[currchar]] : HIDtoSET1_Break[ASCIItoHID[currchar]]))
-        ;
+    while (!SendKeyboard(HIDtoSET2_Break[ASCIItoHID[currchar]]));
 }
 
 __xdata uint8_t GlobalSendBuff[8];
