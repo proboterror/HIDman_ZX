@@ -2,7 +2,7 @@
 #define __SYSTEM_H__
 
 
-//#define	 FREQ_SYS	48000000ul	  //ϵͳ��Ƶ48MHz
+//#define	 FREQ_SYS	48000000ul	  //系统主频48MHz
 
 #ifndef  BUAD_RATE
 #ifdef DEBUG
@@ -12,9 +12,9 @@
 #endif
 #endif
 
-void CfgFsys(void);                        //CH559ʱ��ѡ�������
-void mDelayuS(UINT16 n);              // ��uSΪ��λ��ʱ
-void mDelaymS(UINT16 n);              // ��mSΪ��λ��ʱ
+void CfgFsys(void);                        //CH559时钟选择和配置
+void mDelayuS(UINT16 n);              // 以uS为单位延时
+void mDelaymS(UINT16 n);              // 以mS为单位延时
 
 #include <stdio.h>
 

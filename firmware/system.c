@@ -14,12 +14,12 @@ __xdata volatile bool OutputsEnabled = 0;
 
 /*******************************************************************************
  * Function Name  : mDelayus(UNIT16 n)
- * Description    : us��ʱ����
+ * Description    : us延时函数
  * Input          : UNIT16 n
  * Output         : None
  * Return         : None
- *******************************************************************************/
-void mDelayuS(UINT16 n) // ��uSΪ��λ��ʱ
+ *******************************************************************************/ 
+void mDelayuS(UINT16 n) // 以uS为单位延时
 {
 	while (n)
 	{				// total = 12~13 Fsys cycles, 1uS @Fsys=12MHz
@@ -98,12 +98,12 @@ void mDelayuS(UINT16 n) // ��uSΪ��λ��ʱ
 
 /*******************************************************************************
  * Function Name  : mDelayms(UNIT16 n)
- * Description    : ms��ʱ����
+ * Description    : ms延时函数
  * Input          : UNIT16 n
  * Output         : None
  * Return         : None
  *******************************************************************************/
-void mDelaymS(UINT16 n) // ��mSΪ��λ��ʱ
+void mDelaymS(UINT16 n) // 以mS为单位延时
 {
 	// reset watchdog, as this function is only used by USB routines that sometimes take a while to return
 	SoftWatchdog = 0;

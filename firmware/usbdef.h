@@ -1,4 +1,4 @@
-#ifndef __USB_DEF__
+﻿#ifndef __USB_DEF__
 #define __USB_DEF__
 
 #ifdef __cplusplus
@@ -169,7 +169,7 @@ extern "C" {
 #define MSC_PROTOCOL_BULK_ONLY          0x50
 
 #ifndef USB_DEVICE_ADDR
-#define	USB_DEVICE_ADDR			0x02	/* Ĭ�ϵ�USB�豸��ַ */
+#define	USB_DEVICE_ADDR			0x02	/* 默认的USB设备地址 */
 #endif
 #ifndef DEFAULT_ENDP0_SIZE
 #define DEFAULT_ENDP0_SIZE      8       /* default maximum packet size for endpoint 0 */
@@ -178,15 +178,15 @@ extern "C" {
 #define MAX_PACKET_SIZE         64      /* maximum packet size */
 #endif
 #ifndef USB_BO_CBW_SIZE
-#define USB_BO_CBW_SIZE			0x1F	/* �����CBW���ܳ��� */
-#define USB_BO_CSW_SIZE			0x0D	/* ����״̬��CSW���ܳ��� */
+#define USB_BO_CBW_SIZE			0x1F	/* 命令块CBW的总长度 */
+#define USB_BO_CSW_SIZE			0x0D	/* 命令状态块CSW的总长度 */
 #endif
 #ifndef USB_BO_CBW_SIG0
-#define USB_BO_CBW_SIG0         0x55    /* �����CBWʶ���־'USBC' */
+#define USB_BO_CBW_SIG0         0x55    /* 命令块CBW识别标志'USBC' */
 #define USB_BO_CBW_SIG1         0x53
 #define USB_BO_CBW_SIG2         0x42
 #define USB_BO_CBW_SIG3         0x43
-#define USB_BO_CSW_SIG0         0x55    /* ����״̬��CSWʶ���־'USBS' */
+#define USB_BO_CSW_SIG0         0x55    /* 命令状态块CSW识别标志'USBS' */
 #define USB_BO_CSW_SIG1         0x53
 #define USB_BO_CSW_SIG2         0x42
 #define USB_BO_CSW_SIG3         0x53
