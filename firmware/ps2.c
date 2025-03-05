@@ -84,12 +84,6 @@ bool SendKeyboard(const uint8_t *chunk)
 	// chunk is null, pretend we sent it
 	if (chunk == NULL)
 		return 1;
-
-	// If we're emulating an 83-key keyboard, don't send keycodes starting with E0
-	if (FlashSettings->XT83Keys && chunk[1] == 0xE0) {
-		TR0 = 1; 
-		return 1; // just pretend we sent it
-	}
 	
 	TR0 = 0; //disable timer0  so send is not disabled while we're in the middle of buffer shuffling
 

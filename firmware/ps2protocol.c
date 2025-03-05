@@ -19,7 +19,6 @@
 #include "mouse.h"
 #include "pwm.h"
 #include "keyboardled.h"
-#include "xt.h"
 #include "settings.h"
 #include "system.h"
 #include "scancode.h"

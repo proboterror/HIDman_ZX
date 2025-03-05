@@ -38,8 +38,7 @@ $(OBJDIR)/usbll.rel \
 $(OBJDIR)/preset.rel \
 $(OBJDIR)/ps2mapping.rel \
 $(OBJDIR)/linkedlist.rel \
-$(OBJDIR)/scancode.rel \
-$(OBJDIR)/xt.rel
+$(OBJDIR)/scancode.rel
 
 ifneq ($(BOARD_TYPE), BOARD_MICRO)
 	COMMON += $(OBJDIR)/uart.rel

@@ -10,7 +10,6 @@
 #include "parsedescriptor.h"
 #include "menu.h"
 #include "mouse.h"
-#include "xt.h"
 #include "pwm.h"
 #include "keyboardled.h"
 

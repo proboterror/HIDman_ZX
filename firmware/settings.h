@@ -2,9 +2,8 @@
 #ifndef _SETTINGS_H_
 #define _SETTINGS_H_
 
-// Keyboard Ouput Modes (PS2, XT)
+// Keyboard Ouput Modes (PS2)
 #define MODE_PS2 0
-#define MODE_XT 1
 
 typedef struct Settings {
 
@@ -22,9 +21,6 @@ typedef struct Settings {
 
     // Emulate 3rd PS/2 button + Wheel
     bool Intellimouse;
-
-    // Limit XT keyboards to 81 keys only
-    bool XT83Keys;
 
     // Use game controller to control mouse
     bool GameControllerAsMouse;

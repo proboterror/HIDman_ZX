@@ -146,15 +146,11 @@ void Menu_Task(void)
                 SendKeyboardString("1. Advanced USB - ");
                 YesNo(FlashSettings->KeyboardReportMode);
 
-                SendKeyboardString("2. 83 Key Mode - ");
-                YesNo(FlashSettings->XT83Keys);
-
                 SendKeyboardString("\nESC. Main Menu\n");
                 lastMenuState = menuState;
             }
             switch (menuKey) {
                 case KEY_1:     HMSettings.KeyboardReportMode ^= 1;     SyncSettings(); lastMenuState = 0; break;
-                case KEY_2:     HMSettings.XT83Keys ^= 1;               SyncSettings(); lastMenuState = 0; break;
                 case KEY_ESC:   menuState = MENU_STATE_MAIN; break;
             }
         break;

@@ -10,7 +10,6 @@
 #include "parsedescriptor.h"
 #include "menu.h"
 #include "mouse.h"
-#include "xt.h"
 #include "pwm.h"
 #include "keyboardled.h"
 #include "dataflash.h"
@@ -96,11 +95,6 @@ void EveryMillisecond(void) {
 				// blue
 				P0 &= ~0b01000000;
 			break;
-			case MODE_XT:
-				// orange
-				P0 &= ~0b00010000;
-				P0 &= ~0b00100000;
-			break;
 		}
 
 #else
@@ -114,11 +108,6 @@ void EveryMillisecond(void) {
 					// blue
 					T3_FIFO_L = 0xFF;
 					T3_FIFO_H = 0;
-				break;
-				case MODE_XT:
-					// orange
-					SetPWM2Dat(0x10);
-					SetPWM1Dat(0x40);
 				break;
 
 			}
@@ -138,10 +127,6 @@ void mTimer0Interrupt(void) __interrupt(INT_NO_TMR0)
 		switch (FlashSettings->KeyboardMode) {
 			case (MODE_PS2):
 				PS2ProcessPort(PORT_KEY);
-				break;
-
-			case (MODE_XT):
-				XTProcessPort();
 				break;
 		}
 
