@@ -45,15 +45,6 @@ void EveryMillisecond(void) {
 	// check the button
 	inputProcess();
 
-	// Deal with BAT (which requires a delay)
-
-	if (BatCounter){
-		BatCounter--;
-		if (!BatCounter)
-			SimonSaysSendKeyboard(KEY_BATCOMPLETE);
-	}
-
-
 	// Turn current LED on if we haven't seen any activity in a while
 	if (LEDDelayMs) {
 		LEDDelayMs--;
@@ -88,17 +79,9 @@ void mTimer0Interrupt(void) __interrupt(INT_NO_TMR0)
 
 	if (OutputsEnabled) {
 
-		PS2ProcessPort(PORT_KEY);
+		//PS2ProcessPort(PORT_KEY);
 
-		PS2ProcessPort(PORT_MOUSE);
-
-		// Handle keyboard typematic repeat timers
-		// (divide timer down to 15KHz to make maths easier)
-		static uint8_t repeatDiv = 0;
-		if (++repeatDiv == 4) {
-			repeatDiv = 0;
-			RepeatTimer();
-		}
+		//PS2ProcessPort(PORT_MOUSE);
 	}
 
 	static uint8_t msDiv = 0;
@@ -152,7 +135,6 @@ int main(void)
 	EA = 1;	 // enable all interrupts
 
 	memset(SendBuffer, 0, 255);
-	memset(MouseBuffer, 0, MOUSE_BUFFER_SIZE);
 
 	if (WatchdogReset) DEBUGOUT("Watchdog reset detected (%x), entering safemode\n", PCON);
 
@@ -180,8 +162,6 @@ int main(void)
 		if (MenuActive)
 			Menu_Task();
 		ProcessUsbHostPort();
-		ProcessKeyboardLed();
-		HandleRepeats();
 		HandleMouse();
 		
 	}

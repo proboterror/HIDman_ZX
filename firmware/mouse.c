@@ -7,18 +7,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
 #include "ch559.h"
-#include "usbhost.h"
-#include "uart.h"
-#include "ps2.h"
-#include "data.h"
-#include "ps2protocol.h"
-#include "menu.h"
 #include "mouse.h"
-#include "defs.h"
-#include "system.h"
 
 __xdata int16_t Ps2MouseScalingTable[] = {-9, -6, -3, -1, -1, 0, 1, 1, 3, 6, 9};
 
@@ -27,10 +18,8 @@ __xdata MOUSE OutputMice;
 void InitMice(void)
 {
     memset(&OutputMice, 0x00, sizeof(OutputMice));
-	Ps2MouseSetType(MOUSE_PS2_TYPE_STANDARD);
-	Ps2MouseSetDefaults();
 }
-__xdata uint8_t updates = 0;
+
 void MouseMove(int32_t DeltaX, int32_t DeltaY, int32_t DeltaZ)
 {
     MOUSE *m = &OutputMice;
@@ -67,12 +56,6 @@ uint8_t GetMouseUpdate(int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t
 {
     MOUSE *m = &OutputMice;
 	
-	if (m->Ps2DataReporting == MOUSE_PS2_REPORTING_OFF)
-	{
-		// ps2 mouse and data reporting is off - no matter if update is needed or not, we do not give one
-		return 0;
-	}
-    
 	if (m->NeedsUpdating)
     {
         // assume it doesn't need updating after this, but can change if deltas exceeds min/max limit
@@ -125,61 +108,6 @@ void MouseSet(uint8_t Button, uint8_t value)
     m->NeedsUpdating = 1;
 }
 
-void Ps2MouseSetDelta(uint8_t DeltaX, uint8_t DeltaY, uint8_t DeltaZ)
-{
-	MOUSE *m = &OutputMice;
-	m->DeltaX = DeltaX;
-	m->DeltaY = DeltaY;
-	m->DeltaZ = DeltaZ;
-}
-
-void Ps2MouseSetType(uint8_t Type)
-{
-	MOUSE *m = &OutputMice;
-	m->Ps2Type = Type;
-}
-
-void Ps2MouseSetMode(uint8_t Mode) {
-	// TODO: implement (does anything use remote or wrap mode?)
-	MOUSE *m = &OutputMice;
-	m->Ps2Mode = Mode;
-	Ps2MouseSetDelta(0, 0, 0);
-}
-
-void Ps2MouseSetRate(uint8_t Rate) {
-	// TODO: implement
-	MOUSE *m = &OutputMice;
-	m->Ps2Rate = Rate;
-	Ps2MouseSetDelta(0, 0, 0);
-}
-
-void Ps2MouseSetResolution(uint8_t Resolution) {
-	MOUSE *m = &OutputMice;
-	m->Ps2Resolution = Resolution;
-	Ps2MouseSetDelta(0, 0, 0);
-}
-
-void Ps2MouseSetScaling(uint8_t Scaling) {
-	MOUSE *m = &OutputMice;
-	m->Ps2Scaling = Scaling;
-}
-
-void Ps2MouseSetReporting(bool Reporting) {
-	MOUSE *m = &OutputMice;
-	m->Ps2DataReporting = Reporting;
-	Ps2MouseSetDelta(0, 0, 0);
-}
-
-void Ps2MouseSetDefaults(void) {
-	Ps2MouseSetRate(100);
-	Ps2MouseSetResolution(MOUSE_PS2_RESOLUTION_4CMM);
-	Ps2MouseSetScaling(MOUSE_PS2_SCALING_1X);
-	Ps2MouseSetReporting(MOUSE_PS2_REPORTING_OFF);
-	Ps2MouseSetMode(MOUSE_PS2_MODE_STREAM);
-} 
-
-__xdata uint8_t PrevButtons = 0;
-
 __xdata MOUSE *ps2Mouse = &OutputMice;
 
 void HandleMouse(void) {
@@ -187,11 +115,9 @@ void HandleMouse(void) {
 		int16_t X, Y, Z;
 		uint8_t byte1, byte2, byte3, byte4;
 		uint8_t Buttons;
-		// Send PS/2 Mouse Packet if necessary
-		// make sure there's space in the buffer before we pop any mouse updates
-		if ((ports[PORT_MOUSE].sendBuffEnd + 1) % 8 != ports[PORT_MOUSE].sendBuffStart)
+
 		{
-			if (GetMouseUpdate(-255, 255, &X, &Y, &Z, &Buttons, (ps2Mouse->Ps2Scaling==MOUSE_PS2_SCALING_2X), (3-ps2Mouse->Ps2Resolution)))
+			if (GetMouseUpdate(-255, 255, &X, &Y, &Z, &Buttons, false/*(ps2Mouse->Ps2Scaling==MOUSE_PS2_SCALING_2X)*/, 0/*(3-ps2Mouse->Ps2Resolution)*/))
 			{
 				// ps2 is inverted compared to USB
 				Y = -Y;
@@ -206,20 +132,9 @@ void HandleMouse(void) {
 				byte3 = (Y & 0xFF);
 
 
-				if (ps2Mouse->Ps2Type == MOUSE_PS2_TYPE_INTELLIMOUSE_3_BUTTON)
 				{
 					byte4 = (-Z & 0xFF);
-					SendMouse4(byte1, byte2, byte3, byte4);
-				}
-				else if (ps2Mouse->Ps2Type == MOUSE_PS2_TYPE_INTELLIMOUSE_5_BUTTON)
-				{
-					byte4 = (-Z & 0b00001111) |    // wheel 
-					((Buttons << 1) & 0b00110000); // buttons 4 and 5					
-					SendMouse4(byte1, byte2, byte3, byte4);
-				}
-				else
-				{
-					SendMouse3(byte1, byte2, byte3);
+//					SendMouse4(byte1, byte2, byte3, byte4);
 				}
 			}
 		}

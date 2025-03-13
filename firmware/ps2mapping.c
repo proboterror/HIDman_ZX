@@ -5,17 +5,13 @@
 */
 
 
-#include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include "type.h"
 #include "usbdef.h"
 #include "ch559.h"
 #include "defs.h"
 #include "usbhost.h"
-#include "ps2protocol.h"
 #include "data.h"
-#include "ps2.h"
 #include "parsedescriptor.h"
 #include "andyalloc.h"
 #include "system.h"
