@@ -346,7 +346,7 @@ UINT8 HIDDataTransferReceive(USB_HUB_PORT *pUsbDevice)
 						// HIS IS WHERE THE FUN STUFF GOES
 						//ProcessHIDData(pInterface, ReceiveDataBuffer, len);
 						ParseReport(pInterface, len * 8, ReceiveDataBuffer);
-						if (FlashSettings->SerialDebugOutput) {
+						if (HMSettings.SerialDebugOutput) {
 							DEBUGOUT("I%hX L%X- ", i, len);
 							DumpHex(ReceiveDataBuffer, len);
 						}

@@ -132,7 +132,7 @@ int putcharserial(int c)
 int putchar(int c)
 {
 	#if !defined(BOARD_MICRO)
-	if (FlashSettings->SerialDebugOutput){
+	if (HMSettings.SerialDebugOutput){
 		while (!TI)
 			;
 		TI = 0;

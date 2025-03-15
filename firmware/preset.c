@@ -54,7 +54,7 @@ void InitPresets(void) {
 
     // Some buttons get mapped differently depending on if
     // game controllers are set to emulate mice
-    if (FlashSettings->GameControllerAsMouse)
+    if (HMSettings.GameControllerAsMouse)
         LoadPreset(ConfigGameMouse);
     else
         LoadPreset(ConfigGameNoMouse);

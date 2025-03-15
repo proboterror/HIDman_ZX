@@ -128,7 +128,7 @@ int main(void)
 
 	if (WatchdogReset) DEBUGOUT("Watchdog reset detected (%x), entering safemode\n", PCON);
 
-	InitSettings(WatchdogReset);
+	InitSettings();
 
 	// enable watchdog
 	WDOG_COUNT = 0x00;
