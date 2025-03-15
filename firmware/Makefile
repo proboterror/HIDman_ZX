@@ -24,7 +24,6 @@ $(OBJDIR)/usbhost.rel \
 $(OBJDIR)/data.rel \
 $(OBJDIR)/ps2protocol.rel \
 $(OBJDIR)/andyalloc.rel \
-$(OBJDIR)/pwm.rel \
 $(OBJDIR)/mouse.rel \
 $(OBJDIR)/settings.rel \
 $(OBJDIR)/usbll.rel \

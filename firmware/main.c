@@ -7,7 +7,6 @@
 #include "ps2protocol.h"
 #include "parsedescriptor.h"
 #include "mouse.h"
-#include "pwm.h"
 #include "keyboardled.h"
 #include "settings.h"
 #include "system.h"
@@ -44,14 +43,7 @@ void EveryMillisecond(void) {
 	if (LEDDelayMs) {
 		LEDDelayMs--;
 	} else {
-			SetPWM1Dat(0x00);
-			SetPWM2Dat(0x00);
-			T3_FIFO_L = 0;
-			T3_FIFO_H = 0;
-
-			// blue
-			T3_FIFO_L = 0xFF;
-			T3_FIFO_H = 0;
+		setLED(true);
 	}
 }
 
@@ -98,8 +90,6 @@ int main(void)
 
 	InitUsbData();
 	InitUsbHost();
-
-	InitPWM();
 
 	ps2_keyboard_init();
 	zx_keyboard_init();

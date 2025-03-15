@@ -12,7 +12,7 @@
 #include "usbhost.h"
 #include "ps2protocol.h"
 #include "mouse.h"
-#include "pwm.h"
+#include "keyboardled.h"
 #include "system.h"
 #include "scancode.h"
 #include "ps2_keyboard.h"
@@ -252,10 +252,7 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 	__xdata LinkedList *currSegNode;
 
 	// Turn off LEDs for a while
-	SetPWM1Dat(0x00);
-	SetPWM2Dat(0x00);
-	T3_FIFO_L = 0;
-	T3_FIFO_H = 0;
+	setLED(false);
 
 	LEDDelayMs = 33;
 

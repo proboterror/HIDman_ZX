@@ -1,7 +1,4 @@
-
-#ifndef _KEYBOARDLED_H_
-#define _KEYBOARDLED_H_
+#pragma once
 
 extern UINT8 GetKeyboardLedStatus(void);
-#endif
-
+void setLED(bool state);
