@@ -25,9 +25,7 @@ $(OBJDIR)/parsedescriptor.rel \
 $(OBJDIR)/system.rel \
 $(OBJDIR)/usbhost.rel \
 $(OBJDIR)/data.rel \
-$(OBJDIR)/menu.rel \
 $(OBJDIR)/ps2protocol.rel \
-$(OBJDIR)/ps2.rel \
 $(OBJDIR)/andyalloc.rel \
 $(OBJDIR)/pwm.rel \
 $(OBJDIR)/mouse.rel \

@@ -60,7 +60,7 @@ void ClockInit(void);
 void pinMode(unsigned char port, unsigned char pin, unsigned char mode);
 
 extern __xdata volatile uint16_t SoftWatchdog;
-extern __xdata volatile bool OutputsEnabled;
+
 #define DEBUGOUT(...) { printf(__VA_ARGS__);}
 #endif
 

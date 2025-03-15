@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "ps2.h"
 #include "defs.h"
 #include "usbhidkeys.h"
 #include "data.h"

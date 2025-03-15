@@ -6,9 +6,7 @@
 #include "usbhost.h"
 #include "uart.h"
 #include "ps2protocol.h"
-#include "ps2.h"
 #include "parsedescriptor.h"
-#include "menu.h"
 #include "mouse.h"
 
 #define SetPWMClk(CK_SE) (PWM_CK_SE = CK_SE)   //Frequency division, default clock Fsys

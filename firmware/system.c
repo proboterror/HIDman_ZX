@@ -2,15 +2,12 @@
 #include "type.h"
 #include "ch559.h"
 #include "system.h"
-#include "ps2.h"
-#include "menu.h"
 #include "settings.h"
 #include "scancode.h"
 
 __xdata volatile uint16_t SoftWatchdog = 0;
 
 FunctionReference runBootloader = (FunctionReference)0xF400;
-__xdata volatile bool OutputsEnabled = 0;
 
 /*******************************************************************************
  * Function Name  : mDelayus(UNIT16 n)
@@ -143,24 +140,6 @@ int putchar(int c)
 	}
 	#endif
 	
-	if (KeyboardDebugOutput)
-	{
-		// capitals, hold shift first
-		if (c >= 0x41 && c <= 0x5A)
-			while (!SendKeyboard(KEY_SET2_LSHIFT_MAKE));
-
-		// press the key
-		PressKey(c);
-
-		// release the key
-		ReleaseKey(c);
-
-		// release shift
-		if (c >= 0x41 && c <= 0x5A)
-		{
-			while (!SendKeyboard(KEY_SET2_LSHIFT_BREAK));
-		}
-	}
 	return c;
 }
 

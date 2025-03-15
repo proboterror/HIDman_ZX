@@ -8,7 +8,6 @@
 #include "defs.h"
 #include "usbdef.h"
 #include "usbhost.h"
-#include "menu.h"
 #include "data.h"
 #include "settings.h"
 #include "andyalloc.h"

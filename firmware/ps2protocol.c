@@ -10,9 +10,7 @@
 #include <string.h>
 #include "ch559.h"
 #include "usbhost.h"
-#include "ps2.h"
 #include "ps2protocol.h"
-#include "menu.h"
 #include "mouse.h"
 #include "pwm.h"
 #include "system.h"
@@ -319,9 +317,6 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 
 						if (descReport->KeyboardKeyMap[d] & (1 << c)) // set in current but not prev
 						{
-							if (MenuActive)
-								Menu_Press_Key(hidcode);
-							else
 							{
 								//DEBUGOUT("\nSendn %x\n", hidcode);
 								// Make
@@ -331,7 +326,6 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 						}
 						else // set in prev but not current
 						{
-							if (!MenuActive)
 							{
 								// break
 

@@ -19,7 +19,6 @@
 #include "ps2protocol.h"
 #include "ps2mapping.h"
 #include "data.h"
-#include "ps2.h"
 #include "parsedescriptor.h"
 #include "andyalloc.h"
 #include "system.h"

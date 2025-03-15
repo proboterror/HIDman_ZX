@@ -1,14 +1,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <string.h>
 #include "ch559.h"
 #include "usbhost.h"
 #include "uart.h"
 #include "ps2protocol.h"
-#include "ps2.h"
 #include "parsedescriptor.h"
-#include "menu.h"
 #include "mouse.h"
 #include "pwm.h"
 #include "keyboardled.h"
@@ -44,9 +41,6 @@ void EveryMillisecond(void) {
 
 	UsbUpdateCounter++;
 
-	// check the button
-	inputProcess();
-
 	// Turn current LED on if we haven't seen any activity in a while
 	if (LEDDelayMs) {
 		LEDDelayMs--;
@@ -78,14 +72,6 @@ void EveryMillisecond(void) {
 // i.e. 60khz
 void mTimer0Interrupt(void) __interrupt(INT_NO_TMR0)
 {
-
-	if (OutputsEnabled) {
-
-		//PS2ProcessPort(PORT_KEY);
-
-		//PS2ProcessPort(PORT_MOUSE);
-	}
-
 	static uint8_t msDiv = 0;
 	if (++msDiv == 60) {
 		msDiv = 0;
@@ -128,8 +114,6 @@ int main(void)
 
 	InitPWM();
 
-	InitPS2Ports();
-
 	ps2_keyboard_init();
 	zx_keyboard_init();
 
@@ -141,8 +125,6 @@ int main(void)
 	ET0 = 1; //enable timer0 interrupt;
 
 	EA = 1;	 // enable all interrupts
-
-	memset(SendBuffer, 0, 255);
 
 	if (WatchdogReset) DEBUGOUT("Watchdog reset detected (%x), entering safemode\n", PCON);
 
@@ -156,10 +138,6 @@ int main(void)
 
 	WDOG_COUNT = 0x00;
 
-	//while(1);
-
-	OutputsEnabled = 1;
-
 	DEBUGOUT("ok\n");
 
 	// main loop
@@ -167,8 +145,7 @@ int main(void)
 	{
 		// reset watchdog
 		SoftWatchdog = 0;
-		if (MenuActive)
-			Menu_Task();
+
 		ProcessUsbHostPort();
 		HandleMouse();
 		

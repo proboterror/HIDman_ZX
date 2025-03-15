@@ -15,10 +15,8 @@
 #include "ch559.h"
 #include "usbhost.h"
 #include "uart.h"
-#include "ps2.h"
 #include "data.h"
 #include "ps2protocol.h"
-#include "menu.h"
 #include "system.h"
 
 #define CH559UART1_FIFO_EN 1 //Enable CH559 serial port 1 receiving FIFO (receive and send 8 bytes each)

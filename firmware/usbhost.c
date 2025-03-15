@@ -7,7 +7,6 @@
 #include "defs.h"
 #include "usbdef.h"
 #include "usbhost.h"
-#include "menu.h"
 #include "data.h"
 #include "settings.h"
 #include "andyalloc.h"
@@ -347,7 +346,7 @@ UINT8 HIDDataTransferReceive(USB_HUB_PORT *pUsbDevice)
 						// HIS IS WHERE THE FUN STUFF GOES
 						//ProcessHIDData(pInterface, ReceiveDataBuffer, len);
 						ParseReport(pInterface, len * 8, ReceiveDataBuffer);
-						if (KeyboardDebugOutput || FlashSettings->SerialDebugOutput) {
+						if (FlashSettings->SerialDebugOutput) {
 							DEBUGOUT("I%hX L%X- ", i, len);
 							DumpHex(ReceiveDataBuffer, len);
 						}
@@ -998,9 +997,6 @@ void RegrabDeviceReports(UINT8 port)
 void ReenumerateAllPorts(void){
 	UINT8 i;
 	
-	if (!KeyboardDebugOutput)
-		OutputsEnabled = 0;
-
 	DEBUGOUT("reenumerating all ports\n");
 	mDelaymS(150);
 
@@ -1016,7 +1012,6 @@ void ReenumerateAllPorts(void){
 		RegrabDeviceReports(i);
 	}
 	DEBUGOUT("done reenumerating\n");
-	OutputsEnabled = 1;
 }
 
 //----------------------------------------------------------------------------------
