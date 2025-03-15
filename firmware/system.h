@@ -42,6 +42,23 @@ extern FunctionReference runBootloader;
 void GPIOInit(void);
 void ClockInit(void);
 
+//Input only, no pull up
+#define PIN_MODE_INPUT 0
+//Input only, pull up
+#define PIN_MODE_INPUT_PULLUP 1
+//Push-pull output, high and low level strong drive
+#define PIN_MODE_OUTPUT 2
+//Open drain output, no pull-up, support input
+#define PIN_MODE_OUTPUT_OPEN_DRAIN 3
+//Open-drain output, no pull-up, only drives 2 clocks high when the transition output goes from low to high
+#define PIN_MODE_OUTPUT_OPEN_DRAIN_2CLK 4
+//Weakly bidirectional (standard 51 mode), open drain output, with pull-up
+#define PIN_MODE_INPUT_OUTPUT_PULLUP 5
+//Quasi-bidirectional (standard 51 mode), open-drain output, with pull-up, when the transition output is low to high, only drives 2 clocks high
+#define PIN_MODE_INPUT_OUTPUT_PULLUP_2CLK 6
+
+void pinMode(unsigned char port, unsigned char pin, unsigned char mode);
+
 extern __xdata volatile uint16_t SoftWatchdog;
 extern __xdata volatile bool OutputsEnabled;
 #define DEBUGOUT(...) { printf(__VA_ARGS__);}

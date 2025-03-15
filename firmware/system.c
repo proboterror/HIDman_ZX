@@ -238,8 +238,8 @@ void GPIOInit(void)
 	// port3 setup
 	P3_DIR = 0b11100010; // 4 is switch, 5,6,7 are PS2 outputs, 1 is UART0 TXD
 	PORT_CFG |= bP3_OC;	 // open collector
-	P3_PU = 0b00010001;	 // pullup on 1 for TXD, 4 for switch
-	P3 = 0b11110010;	 // default pin states
+	P3_PU = 0b11100001;	 // pullup on 1 for TXD, 4 for switch
+	P3 = 0b11110110;	 // default pin states
 
 	// port4 setup
 	P4_DIR = 0b00010100; // 4.0 is RXD, 4.2 is Blue LED, 4.3 is MOUSE DATA (actually input, since we're faking open drain), 4.4 is TXD, 4.6 is SWITCH
@@ -263,4 +263,49 @@ void ClockInit(void)
 
 	CLOCK_CFG |= 6;
 	PLL_CFG = (24 << 0) | (6 << 5);
+}
+
+void pinMode(unsigned char port, unsigned char pin, unsigned char mode)
+{
+	volatile unsigned char *dir[] = {&P0_DIR, &P1_DIR, &P2_DIR, &P3_DIR};
+	volatile unsigned char *pu[] = {&P0_PU, &P1_PU, &P2_PU, &P3_PU};
+	switch (mode)
+	{
+	case PIN_MODE_INPUT: //Input only, no pull up
+		PORT_CFG &= ~(bP0_OC << port);
+		*dir[port] &= ~(1 << pin);
+		*pu[port] &= ~(1 << pin);
+		break;
+	case PIN_MODE_INPUT_PULLUP: //Input only, pull up
+		PORT_CFG &= ~(bP0_OC << port);
+		*dir[port] &= ~(1 << pin);
+		*pu[port] |= 1 << pin;
+		break;
+	case PIN_MODE_OUTPUT: //Push-pull output, high and low level strong drive
+		PORT_CFG &= ~(bP0_OC << port);
+		*dir[port] |= ~(1 << pin);
+		break;
+	case PIN_MODE_OUTPUT_OPEN_DRAIN: //Open drain output, no pull-up, support input
+		PORT_CFG |= (bP0_OC << port);
+		*dir[port] &= ~(1 << pin);
+		*pu[port] &= ~(1 << pin);
+		break;
+	case PIN_MODE_OUTPUT_OPEN_DRAIN_2CLK: //Open-drain output, no pull-up, only drives 2 clocks high when the transition output goes from low to high
+		PORT_CFG |= (bP0_OC << port);
+		*dir[port] |= 1 << pin;
+		*pu[port] &= ~(1 << pin);
+		break;
+	case PIN_MODE_INPUT_OUTPUT_PULLUP: //Weakly bidirectional (standard 51 mode), open drain output, with pull-up
+		PORT_CFG |= (bP0_OC << port);
+		*dir[port] &= ~(1 << pin);
+		*pu[port] |= 1 << pin;
+		break;
+	case PIN_MODE_INPUT_OUTPUT_PULLUP_2CLK: //Quasi-bidirectional (standard 51 mode), open-drain output, with pull-up, when the transition output is low to high, only drives 2 clocks high
+		PORT_CFG |= (bP0_OC << port);
+		*dir[port] |= 1 << pin;
+		*pu[port] |= 1 << pin;
+		break;
+	default:
+		break;
+	}
 }

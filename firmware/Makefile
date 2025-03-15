@@ -37,7 +37,10 @@ $(OBJDIR)/usbll.rel \
 $(OBJDIR)/preset.rel \
 $(OBJDIR)/ps2mapping.rel \
 $(OBJDIR)/linkedlist.rel \
-$(OBJDIR)/scancode.rel
+$(OBJDIR)/scancode.rel \
+$(OBJDIR)/CH446Q.rel \
+$(OBJDIR)/ps2_keyboard.rel \
+$(OBJDIR)/zx_keyboard.rel
 
 ifneq ($(BOARD_TYPE), BOARD_MICRO)
 	COMMON += $(OBJDIR)/uart.rel
