@@ -9,7 +9,6 @@
 #include "mouse.h"
 #include "pwm.h"
 #include "keyboardled.h"
-#include "dataflash.h"
 #include "settings.h"
 #include "system.h"
 #include "ps2_keyboard.h"

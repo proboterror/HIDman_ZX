@@ -26,7 +26,6 @@ $(OBJDIR)/ps2protocol.rel \
 $(OBJDIR)/andyalloc.rel \
 $(OBJDIR)/pwm.rel \
 $(OBJDIR)/mouse.rel \
-$(OBJDIR)/dataflash.rel \
 $(OBJDIR)/settings.rel \
 $(OBJDIR)/usbll.rel \
 $(OBJDIR)/preset.rel \
