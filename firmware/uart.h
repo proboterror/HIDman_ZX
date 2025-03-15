@@ -1,6 +1,8 @@
 #ifndef _UART_H_
 #define _UART_H_
 
+#include "type.h"
+
 extern void CH559UART0Alter(void);
 
 extern void InitUART0(void);
