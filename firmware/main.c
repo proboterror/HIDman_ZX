@@ -44,15 +44,6 @@ void EveryMillisecond(void) {
 	if (LEDDelayMs) {
 		LEDDelayMs--;
 	} else {
-#if defined(BOARD_MICRO)
-		SetPWM2Dat(0x10);
-#elif defined (BOARD_PS2)
-		P0 |= 0b01110000;
-
-		// blue
-		P0 &= ~0b01000000;
-
-#else
 			SetPWM1Dat(0x00);
 			SetPWM2Dat(0x00);
 			T3_FIFO_L = 0;
@@ -61,7 +52,6 @@ void EveryMillisecond(void) {
 			// blue
 			T3_FIFO_L = 0xFF;
 			T3_FIFO_H = 0;
-#endif
 	}
 }
 
@@ -104,9 +94,7 @@ int main(void)
 	ClockInit();
     mDelaymS(500);   
 	
-#if !defined(BOARD_MICRO)
 	InitUART0();
-#endif
 
 	InitUsbData();
 	InitUsbHost();
