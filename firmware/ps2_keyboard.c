@@ -11,6 +11,22 @@
 volatile __data uint8_t ps2bufsize = 0;
 volatile __data uint8_t ps2buffer[KBD_BUFFER_SIZE] /*= {}*/;
 
+bool ps2_add_raw_code(const uint8_t *data)
+{
+	uint8_t len = *data;
+
+	if(ps2bufsize + len >= KBD_BUFFER_SIZE)
+		return false;
+
+	// interrupt INT0 unsafe, also called from USB interrupt
+	while(len--)
+	{
+		ps2buffer[ps2bufsize++] = *(++data);
+	}
+
+	return true;
+}
+
 uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 {
 	uint8_t len = 0;

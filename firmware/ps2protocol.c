@@ -17,6 +17,7 @@
 #include "pwm.h"
 #include "system.h"
 #include "scancode.h"
+#include "ps2_keyboard.h"
 
 __xdata uint8_t LEDDelayMs = 0;
 
@@ -325,7 +326,7 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 								//DEBUGOUT("\nSendn %x\n", hidcode);
 								// Make
 
-								SendKeyboard(HIDtoSET2_Make[hidcode]);
+								ps2_add_raw_code(HIDtoSET2_Make[hidcode]);
 							}
 						}
 						else // set in prev but not current
@@ -340,7 +341,7 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 								if (hidcode == 0x48)
 									continue;
 
-								SendKeyboard(HIDtoSET2_Break[hidcode]);
+									ps2_add_raw_code(HIDtoSET2_Break[hidcode]);
 
 							}
 						}
