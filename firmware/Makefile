@@ -1,7 +1,4 @@
 BOARD_TYPE = BOARD_AXP
-#BOARD_TYPE = BOARD_PS2
-#BOARD_TYPE = BOARD_MINI
-#BOARD_TYPE = BOARD_MICRO
 
 #OSC_TYPE = OSC_INTERNAL
 OSC_TYPE = OSC_EXTERNAL
@@ -40,10 +37,8 @@ $(OBJDIR)/CH446Q.rel \
 $(OBJDIR)/ps2_keyboard.rel \
 $(OBJDIR)/zx_keyboard.rel
 
-ifneq ($(BOARD_TYPE), BOARD_MICRO)
-	COMMON += $(OBJDIR)/uart.rel
-	COMMON += $(OBJDIR)/uart1.rel
-endif
+COMMON += $(OBJDIR)/uart.rel
+COMMON += $(OBJDIR)/uart1.rel
 
 ifndef FREQ_SYS
 FREQ_SYS = 48000000

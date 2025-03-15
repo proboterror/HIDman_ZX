@@ -131,14 +131,12 @@ int putcharserial(int c)
 
 int putchar(int c)
 {
-	#if !defined(BOARD_MICRO)
 	if (HMSettings.SerialDebugOutput){
 		while (!TI)
 			;
 		TI = 0;
 		SBUF = c & 0xFF;
 	}
-	#endif
 	
 	return c;
 }

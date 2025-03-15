@@ -252,16 +252,11 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 	__xdata LinkedList *currSegNode;
 
 	// Turn off LEDs for a while
-#if defined(BOARD_MICRO)
-	SetPWM2Dat(0x00);
-#elif defined(BOARD_PS2)
-	P0 |= 0b01110000;
-#else
 	SetPWM1Dat(0x00);
 	SetPWM2Dat(0x00);
 	T3_FIFO_L = 0;
 	T3_FIFO_H = 0;
-#endif
+
 	LEDDelayMs = 33;
 
 
