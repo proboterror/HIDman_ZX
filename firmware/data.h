@@ -6,9 +6,6 @@
 
 #include "defs.h"
 
-
-extern __code uint8_t ASCIItoHID[];
-
 extern __code JoyPreset DefaultJoyMaps[];
 extern __code JoyPreset ConfigGameNoMouse[];
 extern __code JoyPreset ConfigGameMouse[];
