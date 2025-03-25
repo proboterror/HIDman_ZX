@@ -6,6 +6,31 @@
 #include "type.h"
 #include "system.h"
 
+#define PS2_CLK_PORT 3
+#define PS2_CLK_PIN 2
+#define PS2_DATA_PORT 3
+#define PS2_DATA_PIN 4
+
+#define GLUE(a, b) a##b
+#define PORT(p) GLUE(P, p)
+#define DIR(p) GLUE(P##p, _DIR)
+#define PADR(n) GLUE(ADDR_P, n)
+
+// CH559 ports adresses
+enum PORT_ADDR
+{
+	ADDR_P0 = 0x80,
+	ADDR_P1 = 0x90,
+	ADDR_P2 = 0xA0,
+	ADDR_P3 = 0xB0
+};
+
+// CH559: Pn_DIR Register: 1 makes the corresponding pin an output, and a 0 makes the corresponding pin an input.
+#define input(PORT_, PIN_) DIR(PORT_) &= ~(1 << PIN_)
+
+SBIT(PS2_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
+SBIT(PS2_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
+
 // Code originated from murmulator platform (https://murmulator.ru) PS/2 keyboard driver source code (drivers/ps2/ps2.c) with modifications.
 
 volatile __data uint8_t ps2bufsize = 0;
@@ -65,6 +90,7 @@ uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 		*code_2 = ps2buffer[2];
 
 	// consider if interupt/thread safe? (totally not)
+	// ToDo: ring buffer queue, disable clock interrupt.
 	for (uint32_t i = len; i < KBD_BUFFER_SIZE; i++)
 	{
 		ps2buffer[i - len] = ps2buffer[i];
@@ -75,9 +101,6 @@ uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 	return len;
 }
 
-SBIT(PS2_KEY_CLOCK, 0xB0, 2); // P3.2
-SBIT(PS2_KEY_DATA, 0xB0, 4); // P3.4
-
 // See also PS2KeyRaw library: Arduino PS2 keyboard interface by Paul Carpenter
 // https://github.com/techpaul/PS2KeyRaw
 void ext0_interrupt(void) __interrupt(INT_NO_INT0)
@@ -87,7 +110,7 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 	static __data uint8_t parity;
 	//static uint32_t prev_ms = 0;
 
-	const uint8_t val = PS2_KEY_DATA;
+	const uint8_t val = PS2_DATA;
 /*
 	// Note: This value wraps roughly every 1 hour 11 minutes and 35 seconds.
 	const uint32_t now_ms = time_us_32(); // Warning: originally time in ms (milliseconds), not us (microseconds); time_us_64 assigned to uint32_t does not make sense.
@@ -122,7 +145,7 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 	case 10: // Parity check
 		parity &= 1;          // Get LSB if 1 = odd number of 1's so parity should be 0
 		if( parity == val )   // Both same parity error
-		  parity = 0xFD;      // To ensure at next bit count clear and discard
+			parity = 0xFD;      // To ensure at next bit count clear and discard
 		break;
 	case 11: // Stop bit
 		if( parity >= 0xFD )  // had parity error
@@ -140,17 +163,21 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 		break;
 	default: // in case of weird error and end of byte reception re-sync
 		bitcount = 0;
-	}	
+	}
 }
 
 void ps2_keyboard_init(void)
 {
-	pinMode(1, 6, PIN_MODE_OUTPUT_OPEN_DRAIN);
-	pinMode(3, 2, PIN_MODE_OUTPUT_OPEN_DRAIN);
-	pinMode(3, 4, PIN_MODE_OUTPUT_OPEN_DRAIN);
+	pinMode(PS2_CLK_PORT, PS2_CLK_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
+	pinMode(PS2_DATA_PORT, PS2_DATA_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
+
+	PS2_CLOCK = PS2_DATA = 1;
+
+	input(PS2_CLK_PORT, PS2_CLK_PIN);
+	input(PS2_DATA_PORT, PS2_DATA_PIN);
 
 	EX0 = 1; // enable external interrupt INT0 or LED interrupt
 	IT0 = 1; // INT0 interrupt type: 0=low level action, 1=falling edge action
 
-	memset(ps2buffer, 0, sizeof(ps2buffer));									   
+	memset(ps2buffer, 0, sizeof(ps2buffer));
 }
