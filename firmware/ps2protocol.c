@@ -17,8 +17,6 @@
 #include "scancode.h"
 #include "ps2_keyboard.h"
 
-__xdata uint8_t LEDDelayMs = 0;
-
 #define SetKey(key,report) (report->KeyboardKeyMap[key >> 3] |= 1 << (key & 0x07))
 
 #define GetOldKey(key,report) (report->oldKeyboardKeyMap[key >> 3] & (1 << (key & 0x07)))
@@ -253,10 +251,6 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 
 	// Turn off LEDs for a while
 	setLED(false);
-
-	LEDDelayMs = 33;
-
-
 
 	if (interface->usesReports)
 	{

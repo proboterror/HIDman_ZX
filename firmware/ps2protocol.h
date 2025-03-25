@@ -5,5 +5,3 @@
 #include "type.h"
 
 bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *report);
-
-extern __xdata uint8_t LEDDelayMs;
