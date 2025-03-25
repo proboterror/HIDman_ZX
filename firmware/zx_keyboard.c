@@ -6,6 +6,7 @@
 
 #include "ps2_keyboard.h"
 #include "CH446Q.h"
+#include "gotek_buttons.h"
 
 /*
 ZX Spectrum 40-key keyboard matrix:
@@ -468,15 +469,17 @@ scan_code_table_E0[] =
 
 void zx_keyboard_init()
 {
+	gotek_buttons_init();
+
 	CH446Q_init();
 	CH446Q_reset();
 }
 
 // Returns true if CTRL pressed.
-bool osd_buttons_update(uint8_t make_code, bool state)
+bool gotek_buttons_update(uint8_t make_code, bool state)
 {
 	static __data bool CTRL, LEFT, RIGHT, DOWN = false;
-/*
+
 	// Single-byte make code used instead of extended two byte codes, prefix 0xE0 ignored.
 	if(make_code == PS2_KEY_LCONTROL) // PS2_KEY_RCONTROL
 		CTRL = state;
@@ -493,10 +496,10 @@ bool osd_buttons_update(uint8_t make_code, bool state)
 		RIGHT = state;
 	}
 
-	const uint8_t buttons = CTRL * ((OSD_BUTTON_SELECT * DOWN) | (OSD_BUTTON_RIGHT * RIGHT) | (OSD_BUTTON_LEFT * LEFT));
+	const uint8_t buttons = CTRL * ((GOTEK_BUTTON_SELECT * DOWN) | (GOTEK_BUTTON_RIGHT * RIGHT) | (GOTEK_BUTTON_LEFT * LEFT));
 
-	set_osd_buttons(buttons);
-*/
+	set_gotek_buttons(buttons);
+
 	return CTRL;
 }
 
@@ -529,7 +532,7 @@ void zx_keyboard_update()
 		const uint8_t state_code = (len == 3) ? code_1 : code_0;
 		const bool state = (state_code != 0xF0);
 
-		if(osd_buttons_update(make_code, state)) // If CTRL modifier key pressed.
+		if(gotek_buttons_update(make_code, state)) // If CTRL modifier key pressed.
 		{
 			if(state) // Process ZX keyboard keys release but not press.
 				continue; // Do not process ZX keyboard and special keys if CTRL modifier key pressed.
