@@ -78,9 +78,30 @@
 #include "type.h"
 #include "system.h"
 
-SBIT(CH446Q_DATA_PIN, 0xB0, 5); // P3.5 CH559L TQFP 48 pin 11
-SBIT(CH446Q_SCLK_PIN, 0xB0, 6); // P3.6 CH559L TQFP 48 pin 12
-SBIT(CH446Q_STROBE_PIN, 0xB0, 7); // P3.7 CH559L TQFP 48 pin 13
+#define CH446Q_DATA_PORT 1
+#define CH446Q_DATA_PIN 3
+
+#define CH446Q_SCLK_PORT 1
+#define CH446Q_SCLK_PIN 4
+
+#define CH446Q_STROBE_PORT 1
+#define CH446Q_STROBE_PIN 5
+
+#define GLUE(a, b) a##b
+#define PADR(n) GLUE(ADDR_P, n)
+
+// CH559 ports adresses
+enum PORT_ADDR
+{
+	ADDR_P0 = 0x80,
+	ADDR_P1 = 0x90,
+	ADDR_P2 = 0xA0,
+	ADDR_P3 = 0xB0
+};
+
+SBIT(CH446Q_DATA, PADR(CH446Q_DATA_PORT), CH446Q_DATA_PIN);
+SBIT(CH446Q_SCLK, PADR(CH446Q_SCLK_PORT), CH446Q_SCLK_PIN);
+SBIT(CH446Q_STROBE, PADR(CH446Q_STROBE_PORT), CH446Q_STROBE_PIN);
 
 // Delay timings in us / microseconds
 #define CH446Q_CLK_LEN 1 // TCKL / TCKH. Assume TAS / TAH is shorter.
@@ -92,33 +113,35 @@ SBIT(CH446Q_STROBE_PIN, 0xB0, 7); // P3.7 CH559L TQFP 48 pin 13
 
 void CH446Q_init()
 {
-	pinMode(3, 5, PIN_MODE_INPUT_OUTPUT_PULLUP);
-	pinMode(3, 6, PIN_MODE_INPUT_OUTPUT_PULLUP);
-	pinMode(3, 7, PIN_MODE_INPUT_OUTPUT_PULLUP);
+	// Set control pins to output (push pull).
+	// Note: CH559 / i8051 port mode set for all port bits.
+	pinMode(CH446Q_DATA_PORT, CH446Q_DATA_PIN, PIN_MODE_OUTPUT);
+	pinMode(CH446Q_SCLK_PORT, CH446Q_SCLK_PIN, PIN_MODE_OUTPUT);
+	pinMode(CH446Q_STROBE_PORT, CH446Q_STROBE_PIN, PIN_MODE_OUTPUT);
 
-	CH446Q_DATA_PIN = CH446Q_SCLK_PIN = CH446Q_STROBE_PIN = 0;
+	CH446Q_DATA = CH446Q_SCLK = CH446Q_STROBE = 0;
 }
 
 void CH446Q_set(uint8_t address, bool value)
 {
 	for(int i = 6; i >= 0; i--)
 	{
-		CH446Q_SCLK_PIN = 0;
+		CH446Q_SCLK = 0;
 		const uint8_t address_bit = (address >> i) & 0x01;
-		CH446Q_DATA_PIN = address_bit;
+		CH446Q_DATA = address_bit;
 		mDelayuS(CH446Q_CLK_LEN); // TCKL overlapped with TAS
 		// Write address on clock rising edge.
-		CH446Q_SCLK_PIN = 1;
+		CH446Q_SCLK = 1;
 		mDelayuS(CH446Q_CLK_LEN); // TCKH overlapped with TAH
 	}
 
 	// Simplified delay timings, actually TCKH,TCS,TDS,TSTB and TDH,TCH,TAS,TCKL are overlap.
-	CH446Q_DATA_PIN = value;
+	CH446Q_DATA = value;
 	mDelayuS(CH446Q_CLK_STB_DELAY /*- CH446Q_CLK_LEN*/); // TCS
 	// Write switch value on strobe high level pulse.
-	CH446Q_STROBE_PIN = 1;
+	CH446Q_STROBE = 1;
 	mDelayuS(CH446Q_STB_LEN); // TSTB
-	CH446Q_STROBE_PIN = 0;
+	CH446Q_STROBE = 0;
 	mDelayuS(CH446Q_STB_DAT_HOLD_DELAY); // TDH. Assume TCH - TDH - TCKL <= 0.
 }
 

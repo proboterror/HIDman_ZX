@@ -11,11 +11,15 @@
 #include "settings.h"
 #include "system.h"
 #include "ps2_keyboard.h"
+#include "ps2_mouse.h"
 #include "zx_keyboard.h"
 
 
 uint8_t UsbUpdateCounter = 0;
+// PS/2 mouse init timeout counter (2s).
+uint16_t counter = 0;
 
+extern volatile bool timer_timeout;
 
 void EveryMillisecond(void) {
 
@@ -45,6 +49,12 @@ void EveryMillisecond(void) {
 	} else {
 		setLED(true);
 	}
+
+	if (++counter == 2000) // Timer 1 period set to 1 ms, init timeout 2s.
+	{
+		timer_timeout = true;
+		counter = 0;
+	}
 }
 
 
@@ -63,6 +73,7 @@ void mTimer0Interrupt(void) __interrupt(INT_NO_TMR0)
 
 // With SDCC prototypes for the interrupts must be visible in the context of the main() function.
 void ext0_interrupt(void) __interrupt(INT_NO_INT0);
+void ext1_interrupt(void) __interrupt(INT_NO_INT1);
 
 int main(void)
 {
@@ -80,7 +91,7 @@ int main(void)
 	while (--UsbUpdateCounter);
 
 #if defined(OSC_EXTERNAL)
-	if (!(P3 & (1 << 4))) runBootloader();
+//	if (!(P3 & (1 << 5))) runBootloader();
 #endif
 
 	ClockInit();
@@ -92,6 +103,7 @@ int main(void)
 	InitUsbHost();
 
 	ps2_keyboard_init();
+	ps2_mouse_init_registers();
 	zx_keyboard_init();
 
 	// timer0 setup
@@ -126,6 +138,7 @@ int main(void)
 		ProcessUsbHostPort();
 		HandleMouse();
 		
+		ps2_mouse_update();
 		zx_keyboard_update();
 	}
 }

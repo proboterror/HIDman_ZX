@@ -33,6 +33,7 @@ $(OBJDIR)/linkedlist.rel \
 $(OBJDIR)/scancode.rel \
 $(OBJDIR)/CH446Q.rel \
 $(OBJDIR)/ps2_keyboard.rel \
+$(OBJDIR)/ps2_mouse.rel \
 $(OBJDIR)/zx_keyboard.rel
 
 COMMON += $(OBJDIR)/uart.rel
@@ -58,7 +59,7 @@ CFLAGS := -V -mmcs51 --model-large --stack-auto \
 	--xram-size $(XRAM_SIZE) --xram-loc $(XRAM_LOC) \
 	--code-size $(CODE_SIZE) \
 	-I/ -DFREQ_SYS=$(FREQ_SYS) -D$(BOARD_TYPE) -D$(BOARD_OPTIONS) -D$(OSC_TYPE) \
-	$(EXTRA_FLAGS)
+	-DENABLE_WHEEL $(EXTRA_FLAGS)
 
 LFLAGS := $(CFLAGS)
 
