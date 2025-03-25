@@ -151,23 +151,31 @@ int getchar(void)
 
 void GPIOInit(void)
 {
-	// port0 setup
-	P0_DIR = 0b11101010; // 0.3, 0.5, 0.6, 0.7 are all keyboard outputs, 0.4 is CTS (i.e. RTS on host), 0.1 is RTS (i.e. CTS on host)
-	PORT_CFG |= bP0_OC;	 // open collector
+	// P0 are are ZX Kempston mouse registers DI data output.
+	P0_DIR = 0xFF;
+	PORT_CFG &= ~bP0_OC; // push pull
 	P0_PU = 0x00;		 // no pullups
-	P0 = 0b11111010;	 // default pin states
+	P0 = 0x00;			 // default pin states
+
+	// 1.0, 1.1, 1.2 are ZX Kempston mouse registers MX, MY, MKEY strobe output,
+	// 1.3, 1.4, 1.5 are CH446Q ZX keyboard matrix DATA, SCLK, STROBE output,
+	// 1.6 are keyboard activity LED output.
+	P1_DIR = 0b01000000;
+	PORT_CFG &= ~bP1_OC; // push pull
+	P1_PU = 0x00;		 // no pullups
+	P1 = 0b01000000;	 // default pin states
 
 	// port2 setup
-	P2_DIR = 0b00110000; // 2.4, 2.5 are RED/GREEN LED outputs
-	PORT_CFG |= bP2_OC;	 // open collector
+	P2_DIR = 0b00000111; // 2.0, 2.1, 2.2 are GOTEK buttons outputs
+	PORT_CFG |= bP2_OC;  // open collector
 	P2_PU = 0x00;		 // no pullups
-	P2 = 0b00110000;	 // LEDs off by default (i.e. high)
+	P2 = 0b00000111;	 // GOTEK buttons off by default (i.e. high)
 
 	// port3 setup
-	P3_DIR = 0b11100010; // 4 is switch, 5,6,7 are PS2 outputs, 1 is UART0 TXD
+	P3_DIR = 0b00000010; // 6 is switch, 2,3,4,5 are PS/2 mouse/keyboard i/o, 1 is UART0 TXD
 	PORT_CFG |= bP3_OC;	 // open collector
-	P3_PU = 0b11100001;	 // pullup on 1 for TXD, 4 for switch
-	P3 = 0b11110110;	 // default pin states
+	P3_PU = 0b01000010;	 // pullup on 1 for TXD, 6 for switch, PS/2 use external pullups
+	P3 = 0b01111110;	 // default pin states
 
 	// port4 setup
 	P4_DIR = 0b00010100; // 4.0 is RXD, 4.2 is Blue LED, 4.3 is MOUSE DATA (actually input, since we're faking open drain), 4.4 is TXD, 4.6 is SWITCH

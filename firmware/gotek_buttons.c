@@ -18,11 +18,12 @@ SBIT(GOTEK_SELECT, PADR(GOTEK_BUTTONS_PORT), GOTEK_SELECT_PIN);
 
 void gotek_buttons_init()
 {
-	// Set control pins to output (push pull).
-	// Note: CH559 / i8051 port mode set for all port bits.
-	pinMode(GOTEK_BUTTONS_PORT, GOTEK_LEFT_PIN, PIN_MODE_OUTPUT);
-	pinMode(GOTEK_BUTTONS_PORT, GOTEK_RIGHT_PIN, PIN_MODE_OUTPUT);
-	pinMode(GOTEK_BUTTONS_PORT, GOTEK_SELECT_PIN, PIN_MODE_OUTPUT);
+    // Set control pins to output (open collector mode)
+    // Note: CH559 / i8051 port mode set for all port bits.
+    // GOTEK buttons are pulled up in MCU on GOTEK side. 
+	pinMode(GOTEK_BUTTONS_PORT, GOTEK_LEFT_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
+	pinMode(GOTEK_BUTTONS_PORT, GOTEK_RIGHT_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
+	pinMode(GOTEK_BUTTONS_PORT, GOTEK_SELECT_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 
 	// GOTEK buttons are pulled up (0 if pressed).
 	GOTEK_LEFT = GOTEK_RIGHT = GOTEK_SELECT = 1;

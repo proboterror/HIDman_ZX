@@ -91,7 +91,7 @@ int main(void)
 	while (--UsbUpdateCounter);
 
 #if defined(OSC_EXTERNAL)
-//	if (!(P3 & (1 << 5))) runBootloader();
+	if (!(P3 & (1 << 6))) runBootloader();
 #endif
 
 	ClockInit();
