@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "Connector_Mini-DIN_Female_6Pin")(type "KiCad")(uri "${KIPRJMOD}/Connector_Mini-DIN_Female_6Pin.pretty")(options "")(descr ""))
+)
