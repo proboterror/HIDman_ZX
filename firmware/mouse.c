@@ -10,6 +10,7 @@
 #include <string.h>
 #include "ch559.h"
 #include "mouse.h"
+#include "ps2_mouse.h"
 
 __xdata int16_t Ps2MouseScalingTable[] = {-9, -6, -3, -1, -1, 0, 1, 1, 3, 6, 9};
 
@@ -84,20 +85,6 @@ uint8_t GetMouseUpdate(int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t
         return 0;
 }
 
-void MouseClick(uint8_t Button)
-{
-    MOUSE *m = &OutputMice;
-    m->Buttons |= 1 << Button;
-    m->NeedsUpdating = 1;
-}
-
-void MouseUnclick(uint8_t Button)
-{
-    MOUSE *m = &OutputMice;
-    m->Buttons &= ~(1 << Button);
-    m->NeedsUpdating = 1;
-}
-
 void MouseSet(uint8_t Button, uint8_t value)
 {
     MOUSE *m = &OutputMice;
@@ -134,7 +121,7 @@ void HandleMouse(void) {
 
 				{
 					byte4 = (-Z & 0xFF);
-//					SendMouse4(byte1, byte2, byte3, byte4);
+					mouse_set_state(byte1, byte2, byte3, byte4);
 				}
 			}
 		}

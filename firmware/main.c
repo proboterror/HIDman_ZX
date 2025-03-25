@@ -102,6 +102,8 @@ int main(void)
 	InitUsbData();
 	InitUsbHost();
 
+	InitMice();
+
 	ps2_keyboard_init();
 	ps2_mouse_init_registers();
 	zx_keyboard_init();

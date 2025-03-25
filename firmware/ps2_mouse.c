@@ -730,6 +730,20 @@ bool mouse_read_state_async(void)
 	return false;
 }
 
+void set_controller_registers();
+
+void mouse_set_state(uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4)
+{
+	mouse_buttons = byte1 & 7;
+	mouse_x += (int8_t)byte2;
+	mouse_y += (int8_t)byte3;
+#if ENABLE_WHEEL
+	mouse_z -= (int8_t)byte4;
+	mouse_z &= 0b00001111;
+#endif
+	set_controller_registers();
+}
+
 void portMode(const uint8_t port, const uint8_t mode)
 {
 	static uint8_t *dir[] = {&P0_DIR, &P1_DIR, &P2_DIR, &P3_DIR};
@@ -784,6 +798,47 @@ void ps2_mouse_init_registers()
 	low(MKEY_PORT, MKEY_PIN);
 }
 
+void set_controller_registers()
+{
+	// Set MX, MY, MKEY values to controller registers.
+	// Data written to registers on rising_edge.
+	PORT(DI_PORT) = mouse_x;
+	_delay_us(DI_BUS_SET_DELAY);
+	high(MX_PORT, MX_PIN);
+	_delay_us(REGISTER_SET_DELAY);
+	low(MX_PORT, MX_PIN);
+
+	PORT(DI_PORT) = mouse_y;
+	_delay_us(DI_BUS_SET_DELAY);
+	high(MY_PORT, MY_PIN);
+	_delay_us(REGISTER_SET_DELAY);
+	low(MY_PORT, MY_PIN);
+
+#if ENABLE_WHEEL
+	PORT(DI_PORT) = (~mouse_buttons & 0b00000111) | (mouse_z << 4) | (0b00001000); // Bit 4 is 4th mouse button (not pressed)
+#else
+	PORT(DI_PORT) = (~mouse_buttons & 0b00000111) | (0b11111000); // Unused port bits set to 1 (mouse_z axis, 4th mouse button)
+#endif
+	_delay_us(DI_BUS_SET_DELAY);
+	high(MKEY_PORT, MKEY_PIN);
+	_delay_us(REGISTER_SET_DELAY);
+	low(MKEY_PORT, MKEY_PIN);
+
+#if DEBUG
+	char buf[5];
+	_uitoa(mouse_x, buf, 10);
+	DEBUGOUT("\n%s",buf);
+	_uitoa(mouse_y, buf, 10);
+	DEBUGOUT(" %s",buf);
+#if ENABLE_WHEEL
+	_itoa(mouse_z, buf, 10);
+	DEBUGOUT(" %s",buf);
+#endif
+	_uitoa((mouse_buttons & 0b00000111), buf, 10);
+	DEBUGOUT(" %s",buf);
+#endif // DEBUG
+}
+
 volatile bool timer_timeout = false;
 
 bool ps2_port_inited = false;
@@ -836,43 +891,7 @@ void ps2_mouse_update()
 	{
 		if(mouse_read_state_async())
 		{
-			// Set MX, MY, MKEY values to controller registers.
-			// Data written to registers on rising_edge.
-			PORT(DI_PORT) = mouse_x;
-			_delay_us(DI_BUS_SET_DELAY);
-			high(MX_PORT, MX_PIN);
-			_delay_us(REGISTER_SET_DELAY);
-			low(MX_PORT, MX_PIN);
-
-			PORT(DI_PORT) = mouse_y;
-			_delay_us(DI_BUS_SET_DELAY);
-			high(MY_PORT, MY_PIN);
-			_delay_us(REGISTER_SET_DELAY);
-			low(MY_PORT, MY_PIN);
-
-#if ENABLE_WHEEL
-			PORT(DI_PORT) = (~mouse_buttons & 0b00000111) | (mouse_z << 4) | (0b00001000); // Bit 4 is 4th mouse button (not pressed)
-#else
-			PORT(DI_PORT) = (~mouse_buttons & 0b00000111) | (0b11111000); // Unused port bits set to 1 (mouse_z axis, 4th mouse button)
-#endif
-			_delay_us(DI_BUS_SET_DELAY);
-			high(MKEY_PORT, MKEY_PIN);
-			_delay_us(REGISTER_SET_DELAY);
-			low(MKEY_PORT, MKEY_PIN);
-
-#if DEBUG
-			char buf[5];
-			_uitoa(mouse_x, buf, 10);
-			DEBUGOUT("\n%s",buf);
-			_uitoa(mouse_y, buf, 10);
-			DEBUGOUT(" %s",buf);
-#if ENABLE_WHEEL
-			_itoa(mouse_z, buf, 10);
-			DEBUGOUT(" %s",buf);
-#endif
-			_uitoa((mouse_buttons & 0b00000111), buf, 10);
-			DEBUGOUT(" %s",buf);
-#endif // DEBUG
+			set_controller_registers();
 		}
 	}
 

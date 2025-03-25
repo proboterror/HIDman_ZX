@@ -23,8 +23,6 @@ __xdata extern MOUSE OutputMice;
 void InitMice(void);
 void MouseMove(int32_t DeltaX, int32_t DeltaY, int32_t DeltaZ);
 uint8_t GetMouseUpdate(int16_t Min, int16_t Max, int16_t *X, int16_t *Y, int16_t *Z, uint8_t *Buttons, bool Accelerate, uint8_t Downscale);
-void MouseClick(uint8_t Button);
-void MouseUnclick(uint8_t Button);
 void MouseSet(uint8_t Button, uint8_t value);
 
 void HandleMouse(void);
