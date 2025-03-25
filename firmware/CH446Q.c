@@ -77,6 +77,7 @@
 #include "ch559.h"
 #include "type.h"
 #include "system.h"
+#include "gpio.h"
 
 #define CH446Q_DATA_PORT 1
 #define CH446Q_DATA_PIN 3
@@ -86,18 +87,6 @@
 
 #define CH446Q_STROBE_PORT 1
 #define CH446Q_STROBE_PIN 5
-
-#define GLUE(a, b) a##b
-#define PADR(n) GLUE(ADDR_P, n)
-
-// CH559 ports adresses
-enum PORT_ADDR
-{
-	ADDR_P0 = 0x80,
-	ADDR_P1 = 0x90,
-	ADDR_P2 = 0xA0,
-	ADDR_P3 = 0xB0
-};
 
 SBIT(CH446Q_DATA, PADR(CH446Q_DATA_PORT), CH446Q_DATA_PIN);
 SBIT(CH446Q_SCLK, PADR(CH446Q_SCLK_PORT), CH446Q_SCLK_PIN);

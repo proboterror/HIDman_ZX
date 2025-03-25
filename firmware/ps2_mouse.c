@@ -26,6 +26,7 @@
 #include "ch559.h"
 #include "type.h"
 #include "system.h"
+#include "gpio.h"
 
 /*
 	Reference:
@@ -192,30 +193,8 @@ enum mouse_resolution
 #define MKEY_PORT 1
 #define MKEY_PIN 2
 
-#define GLUE(a, b) a##b
-#define PORT(p) GLUE(P, p)
-#define DIR(p) GLUE(P##p, _DIR)
-#define PADR(n) GLUE(ADDR_P, n)
-
-// CH559 ports adresses
-enum PORT_ADDR
-{
-	ADDR_P0 = 0x80,
-	ADDR_P1 = 0x90,
-	ADDR_P2 = 0xA0,
-	ADDR_P3 = 0xB0
-};
-
-SBIT(PS2_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
-SBIT(PS2_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
-
-// CH559: Pn_DIR Register: 1 makes the corresponding pin an output, and a 0 makes the corresponding pin an input.
-#define input(PORT_, PIN_) DIR(PORT_) &= ~(1 << PIN_)
-#define output(PORT_, PIN_) DIR(PORT_) |= (1 << PIN_)
-
-// CH559: The Pn Register
-#define low(PORT_, PIN_) PORT(PORT_) &= ~(1 << PIN_)
-#define high(PORT_, PIN_) PORT(PORT_) |= (1 << PIN_)
+SBIT(PS2_MOUSE_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
+SBIT(PS2_MOUSE_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
 
 #define DI_BUS_SET_DELAY 1
 #define REGISTER_SET_DELAY 1
@@ -411,7 +390,7 @@ void ext1_interrupt(void) __interrupt(INT_NO_INT1)
 				//input(PS2_DATA_PORT, PS2_DATA_PIN);
 				break;
 			case 1: // Receive acknowledge bit
-				if (PS2_DATA)
+				if (PS2_MOUSE_DATA)
 					ps2_state = PS2_STATE_ERROR;
 				else
 					ps2_state = PS2_STATE_READ; 
@@ -427,24 +406,24 @@ void ext1_interrupt(void) __interrupt(INT_NO_INT1)
 		switch(ps2_bitcount)
 		{
 			case 11: // Start bit
-				if (PS2_DATA) // Start bit should be 0
+				if (PS2_MOUSE_DATA) // Start bit should be 0
 					ps2_state = PS2_STATE_ERROR;
 
 				break;
 			default: // Data byte
 				ps2_data >>= 1;
 
-				if(PS2_DATA)
+				if(PS2_MOUSE_DATA)
 					ps2_data |= 0x80;
 
 				break;
 			case 2: // Parity bit
-				if (parity(ps2_data) != (PS2_DATA != 0)) // Parity bit (odd parity)
+				if (parity(ps2_data) != (PS2_MOUSE_DATA != 0)) // Parity bit (odd parity)
 					ps2_state = PS2_STATE_ERROR;
 
 				break;
 			case 1: // Stop bit
-				if (PS2_DATA) // Stop bit should be 1
+				if (PS2_MOUSE_DATA) // Stop bit should be 1
 					ps2_rx_push(ps2_data);
 				else
 					 ps2_state = PS2_STATE_ERROR;

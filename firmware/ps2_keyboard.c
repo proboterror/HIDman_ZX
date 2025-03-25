@@ -5,31 +5,15 @@
 #include "ch559.h"
 #include "type.h"
 #include "system.h"
+#include "gpio.h"
 
 #define PS2_CLK_PORT 3
 #define PS2_CLK_PIN 2
 #define PS2_DATA_PORT 3
 #define PS2_DATA_PIN 4
 
-#define GLUE(a, b) a##b
-#define PORT(p) GLUE(P, p)
-#define DIR(p) GLUE(P##p, _DIR)
-#define PADR(n) GLUE(ADDR_P, n)
-
-// CH559 ports adresses
-enum PORT_ADDR
-{
-	ADDR_P0 = 0x80,
-	ADDR_P1 = 0x90,
-	ADDR_P2 = 0xA0,
-	ADDR_P3 = 0xB0
-};
-
-// CH559: Pn_DIR Register: 1 makes the corresponding pin an output, and a 0 makes the corresponding pin an input.
-#define input(PORT_, PIN_) DIR(PORT_) &= ~(1 << PIN_)
-
-SBIT(PS2_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
-SBIT(PS2_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
+SBIT(PS2_KEY_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
+SBIT(PS2_KEY_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
 
 // Code originated from murmulator platform (https://murmulator.ru) PS/2 keyboard driver source code (drivers/ps2/ps2.c) with modifications.
 
@@ -110,7 +94,7 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 	static __data uint8_t parity;
 	//static uint32_t prev_ms = 0;
 
-	const uint8_t val = PS2_DATA;
+	const uint8_t val = PS2_KEY_DATA;
 /*
 	// Note: This value wraps roughly every 1 hour 11 minutes and 35 seconds.
 	const uint32_t now_ms = time_us_32(); // Warning: originally time in ms (milliseconds), not us (microseconds); time_us_64 assigned to uint32_t does not make sense.
@@ -171,7 +155,7 @@ void ps2_keyboard_init(void)
 	pinMode(PS2_CLK_PORT, PS2_CLK_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 	pinMode(PS2_DATA_PORT, PS2_DATA_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 
-	PS2_CLOCK = PS2_DATA = 1;
+	PS2_KEY_CLOCK = PS2_KEY_DATA = 1;
 
 	input(PS2_CLK_PORT, PS2_CLK_PIN);
 	input(PS2_DATA_PORT, PS2_DATA_PIN);
