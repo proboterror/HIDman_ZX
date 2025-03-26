@@ -75,7 +75,12 @@
   "schematic": {
     "legacy_lib_dir": "",
     "legacy_lib_list": []
-  },
-  "sheets": [],
+    },
+  "sheets": [
+    [
+      "e686a5db-35f9-40ca-bbb5-69eb58ec1522",
+      "Root"
+    ]
+  ],
   "text_variables": {}
 }
