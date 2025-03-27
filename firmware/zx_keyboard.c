@@ -532,6 +532,11 @@ void zx_keyboard_update()
 		const uint8_t state_code = (len == 3) ? code_1 : code_0;
 		const bool state = (state_code != 0xF0);
 
+		if(state)
+		{
+			DEBUGOUT("%i ", make_code);
+		}
+
 		if(gotek_buttons_update(make_code, state)) // If CTRL modifier key pressed.
 		{
 			if(state) // Process ZX keyboard keys release but not press.
