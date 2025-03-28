@@ -1,9 +1,7 @@
-BOARD_TYPE = BOARD_AXP
-
 #OSC_TYPE = OSC_INTERNAL
 OSC_TYPE = OSC_EXTERNAL
 
-BOARD_OPTIONS = OPT_DEFAULT
+BUILD_OPTIONS = OPT_DEFAULT
 
 CC = sdcc
 GCC = gcc
@@ -59,15 +57,15 @@ endif
 CFLAGS := -V -mmcs51 --model-large --stack-auto \
 	--xram-size $(XRAM_SIZE) --xram-loc $(XRAM_LOC) \
 	--code-size $(CODE_SIZE) \
-	-I/ -DFREQ_SYS=$(FREQ_SYS) -D$(BOARD_TYPE) -D$(BOARD_OPTIONS) -D$(OSC_TYPE) \
-	-DENABLE_WHEEL $(EXTRA_FLAGS)
+	-I/ -DFREQ_SYS=$(FREQ_SYS) -D$(OSC_TYPE) \
+	-DENABLE_WHEEL -D$(BUILD_OPTIONS) $(EXTRA_FLAGS)
 
 LFLAGS := $(CFLAGS)
 
 TESTCFLAGS := -V -mmcs51 --model-large --stack-auto \
 	--xram-size 0x8000 --xram-loc $(XRAM_LOC) \
 	--code-size 0xEFFF \
-	-I/ -DFREQ_SYS=$(FREQ_SYS) -D$(BOARD_TYPE) -D$(BOARD_OPTIONS) -D$(OSC_TYPE) \
+	-I/ -DFREQ_SYS=$(FREQ_SYS) -D$(OSC_TYPE) \
 	$(EXTRA_FLAGS)
 
 print-%  : ; @echo $* = $($*)
