@@ -10,8 +10,6 @@ PACK_HEX = packihx
 WCHISP = wchisptool
 OBJDIR = ./build
 
-DOSBOX = "C:\Program Files (x86)\DOSBox-0.74-3\dosbox.exe"
-
 TARGET = hidman
 
 COMMON = \
@@ -101,16 +99,7 @@ all: $(OBJDIR)/$(TARGET).bin $(OBJDIR)/$(TARGET).hex
 
 clean:
 	-rm -f $(OBJDIR)/*
-	-rm -f ../mashpipe/*.OBJ
-	-rm -f ../mashpipe/*.EXE
 
 test: $(COMMON) $(OBJDIR)/test.rel $(OBJDIR)/testdata.rel
 	$(CC) $(COMMON) $(OBJDIR)/test.rel $(OBJDIR)/testdata.rel $(TESTCFLAGS) -o $(OBJDIR)/test.ihx
 	s51 -s - build/test 
-
-datagen: 
-	$(GCC) ../data/datagen.c -o datagen
-	datagen
-
-mashpipe.exe:
-	$(DOSBOX) -conf ../mashpipe/dosbox.conf
