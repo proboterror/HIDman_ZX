@@ -198,23 +198,9 @@ Pass the -f parameter to ch55xtool specify the firmware file to load. For exampl
 python3 ch55xtool.py -f hidman_axp_v1.1.bin
 ```
 
-# Advanced Setups
-
-## Splitter
-
-Another way to take advantage of the Combined PS/2 port functionality is to use a widely-available PS/2 splitter :
-
-<img src=/images/splitter.svg width=500/>
-
-This also allows neater cabling, as you could connect both keyboard and mouse ports to the rear, and not have to connect to the front mouse port.
-
 
 ## Technical description
 
 The HIDman is based around the CH559 from WCH, a remarkably flexible chip with **two** USB HOST ports. This makes it ideal for our purposes.
 
 The code is forked from atc1441's excellent repository - https://github.com/atc1441/CH559sdccUSBHost
-
-PCB and enclosure was designed in KiCad - source files are in the hardware directory.
-
-Development is very active but it is usable in its current state.
