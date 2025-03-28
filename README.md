@@ -23,8 +23,8 @@
 В качестве основы проекта был взят проект [HIDman](https://github.com/rasteri/HIDman): USB HID to XT / AT / PS/2 / Serial converter : адаптер USB устройств в PS/2 keyboard/mouse device. От HIDman была взята реализация стека USB Host без модификаций.
 
 Схема использует недорогие доступные чипы от [Nanjing Qinheng Microelectronics](https://www.wch-ic.com):
-- 8-bit Enhanced USB MCU [CH559L]("doc/8-bit Enhanced USB MCU CH559 Datasheet 1.6.pdf"): расширенный Intel 8051 совместимый микроконтроллер с двумя аппаратными USB Host
-- 8x16 Analog Switch Array Chip [CH446Q]("doc/8x16 Analog Switch Array Chip CH446Q Datasheet 1D.pdf"): матрица аналоговых ключей 8x16 с последовательным интерфейсом
+- 8-bit Enhanced USB MCU [CH559L](./doc/8-bit%20Enhanced%20USB%20MCU%20CH559%20Datasheet%201.6.pdf): расширенный Intel 8051 совместимый микроконтроллер с двумя аппаратными USB Host
+- 8x16 Analog Switch Array Chip [CH446Q](./doc/8x16%20Analog%20Switch%20Array%20Chip%20CH446Q%20Datasheet%201D.pdf): матрица аналоговых ключей 8x16 с последовательным интерфейсом
 
 В код добавлены:
 - Реализация асинхронных интерфейсов PS/2 клавиатуры и мыши
