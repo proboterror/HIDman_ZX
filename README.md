@@ -112,7 +112,7 @@ build-release.bat
 
 [PentagonExpander](https://github.com/MikhaelKaa/pentagonexpander) (WiP)<br>
 (С) Михаил Каа MikhaelKaa 2023<br>
-USB / PS/2 мышь / клавиатура, Kempston Mouse / Joystick для Pentagon 128
+USB / PS/2 мышь / клавиатура, Kempston Mouse / Joystick для Pentagon 128<br>
 Микроконтроллер STM32, CPLD EPM7128
 
 [USB2SPECTRUM](https://github.com/MikhaelKaa/usb2spectrum) (WiP)<br>
