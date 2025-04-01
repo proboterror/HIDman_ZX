@@ -15,10 +15,10 @@ UINT8 GetKeyboardLedStatus(void)
 void setLED(bool state)
 {
 	if(state)
-		high(1, 6);
+		high(1, 7);
 	else
 	{
-		low(1, 6);
+		low(1, 7);
 		LEDDelayMs = 33;
 	}
 }

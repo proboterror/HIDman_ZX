@@ -6521,7 +6521,7 @@
 		)
 		(uuid "0badbc15-af9e-4ff5-ab0b-75e173eb24d5")
 	)
-	(label "P1_6"
+	(label "P1_7"
 		(at 129.54 21.59 0)
 		(fields_autoplaced yes)
 		(effects
@@ -6587,7 +6587,7 @@
 		)
 		(uuid "152f08f0-ac7c-476b-a197-2ea9d858d3f2")
 	)
-	(label "P1_7"
+	(label "JOY"
 		(at 36.83 153.67 0)
 		(fields_autoplaced yes)
 		(effects
@@ -7522,6 +7522,17 @@
 		)
 		(uuid "c344d226-519b-4e79-ab5e-57a0abf9f110")
 	)
+	(label "GND"
+		(at 58.42 184.15 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c5b80314-a6b3-4193-8c55-d0f041ecfd0d")
+	)
 	(label "PAUSE"
 		(at 241.3 49.53 0)
 		(fields_autoplaced yes)
@@ -7566,7 +7577,7 @@
 		)
 		(uuid "d024dd5f-e2da-49a6-be55-07cac58a5675")
 	)
-	(label "P1_6"
+	(label "JOY"
 		(at 67.31 24.13 0)
 		(fields_autoplaced yes)
 		(effects
@@ -11610,6 +11621,71 @@
 			(project "zx"
 				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 53.34 184.15 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "93882d59-fca6-4481-99b6-329766ddefc7")
+		(property "Reference" "J26"
+			(at 49.276 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 53.34 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "THT_Pin:THT_Pin_Vertical"
+			(at 53.34 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 53.34 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 53.34 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5ddbc32d-94af-4b00-8541-d3cf446d3775")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "J26")
 					(unit 1)
 				)
 			)
