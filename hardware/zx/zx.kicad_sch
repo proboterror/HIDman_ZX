@@ -6620,6 +6620,17 @@
 		)
 		(uuid "17476add-4861-4b0a-b6a3-7ae17ba20b43")
 	)
+	(label "M_DAT"
+		(at 78.74 161.29 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "19046eb4-3bd7-46b8-a9ed-2047a63e66e5")
+	)
 	(label "DI7"
 		(at 67.31 105.41 0)
 		(fields_autoplaced yes)
@@ -6961,6 +6972,17 @@
 		)
 		(uuid "5b374fba-e9d4-4dcf-8269-f1dd64041535")
 	)
+	(label "KEY_DAT"
+		(at 78.74 153.67 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5bf6acdc-14cd-4ac5-9eba-7ac70de8704f")
+	)
 	(label "P4_3"
 		(at 36.83 168.91 0)
 		(fields_autoplaced yes)
@@ -7081,6 +7103,17 @@
 			(justify left bottom)
 		)
 		(uuid "71dc5768-694b-4ee6-972b-2719780d9093")
+	)
+	(label "KEY_CLK"
+		(at 78.74 157.48 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7228323a-143d-489c-9e26-f85c18ae6967")
 	)
 	(label "STROBE"
 		(at 58.42 180.34 0)
@@ -7697,6 +7730,17 @@
 			(justify left bottom)
 		)
 		(uuid "e3c8092e-602c-4a9f-8c4c-dec1e71dea2c")
+	)
+	(label "M_CLK"
+		(at 78.74 165.1 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ea7da8fd-da42-490d-825f-d383c5316be6")
 	)
 	(label "KA3"
 		(at 241.3 92.71 0)
@@ -8341,6 +8385,71 @@
 			(project "zx"
 				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
 					(reference "#PWR030")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 73.66 153.67 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2187017a-d2de-4a48-b260-4fd44735b5d1")
+		(property "Reference" "J27"
+			(at 69.596 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 73.66 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "THT_Pin:THT_Pin_Vertical"
+			(at 73.66 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 73.66 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "26dcc76d-033c-4c9c-a421-2d285ba041c6")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "J27")
 					(unit 1)
 				)
 			)
@@ -9811,6 +9920,71 @@
 			(project "zx"
 				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
 					(reference "J21")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 73.66 157.48 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "5ab746e8-6e39-4c4d-b4eb-c8d3dfe195fa")
+		(property "Reference" "J28"
+			(at 69.596 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 73.66 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "THT_Pin:THT_Pin_Vertical"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bbf4d5f9-b009-4441-a80e-e03e63a38484")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "J28")
 					(unit 1)
 				)
 			)
@@ -12444,6 +12618,71 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 73.66 165.1 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ad0eeb11-d267-460e-b878-dd8a59dd882d")
+		(property "Reference" "J30"
+			(at 69.596 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 73.66 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "THT_Pin:THT_Pin_Vertical"
+			(at 73.66 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 73.66 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fe8746d5-6f40-4500-9551-da8caa242b75")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "J30")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:Crystal")
 		(at 80.01 63.5 90)
 		(unit 1)
@@ -12907,6 +13146,71 @@
 			(project "zx"
 				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
 					(reference "#PWR021")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 73.66 161.29 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bc1f8ba6-caa9-4395-9ef3-3051ab56fd7d")
+		(property "Reference" "J29"
+			(at 69.596 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 73.66 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "THT_Pin:THT_Pin_Vertical"
+			(at 73.66 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 73.66 161.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "48af379f-0a4b-4322-891a-a9a391690e28")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "J29")
 					(unit 1)
 				)
 			)
