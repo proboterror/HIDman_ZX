@@ -44,8 +44,9 @@ module kempston_mouse
 /*
 	always @(negedge rst_in or posedge MX or posedge MY or posedge MKEY)
 	begin
-		if(rst_in == 0) // ZX BUS Z80 reset
+		if(rst_in == 0)
 		begin
+			// Gluk Reset Service mouse detect code expects correct controller registers values early on power on.
 			register_x = 8'h80;
 			register_y = 8'h60;
 			register_key = 8'hFF;
@@ -69,6 +70,19 @@ module kempston_mouse
 	assign IORQGE = address_partial_match; // CPLD IORQGE pin connected to 3-state buffer OE/ pin.
 	assign enable = ~(address_partial_match | RD | IORQ);
 
+	always_comb
+	begin
+		D = 8'hFF;
+
+		if (enable)
+			case ({A[10], A[8]})
+				2'b00: D = register_key; // #FA 11111010 xxxxx0x0
+				2'b01: D = register_x;   // #FB 11111011 xxxxx0x1
+				2'b11: D = register_y;   // #FF 11111111 xxxxx1x1
+				default: D = 8'hFF;
+			endcase;
+	end
+/*
 	wire MKEY_SEL = enable & ~A[8] & ~A[10]; // #FA 11111010 xxxxx0x0
 	wire MX_SEL = enable & A[8] & ~A[10];    // #FB 11111011 xxxxx0x1
 	wire MY_SEL = enable & A[8] & A[10];     // #FF 11111111 xxxxx1x1
@@ -76,7 +90,8 @@ module kempston_mouse
 	assign D = 
 		MX_SEL ? register_x :
 		MY_SEL ? register_y :
-		MKEY_SEL ? {register_key[7:4], 1'b1, register_key[2:0]} : 8'b0/*unused*/; // 3rd bit == 1 and can be omitted.
+		MKEY_SEL ? {register_key[7:4], 1'b1, register_key[2:0]} : 8'b0; // 3rd bit == 1 and can be omitted.
+*/
 endmodule
 
 module kempston_joy
@@ -103,7 +118,7 @@ module kempston_joy
 /*
 	always @(negedge rst_in or posedge JOY)
 	begin
-		if(rst_in == 0) // ZX BUS Z80 reset
+		if(rst_in == 0)
 			register_joy = 8'h0;
 		else 
 			register_joy = DI;
@@ -112,8 +127,8 @@ module kempston_joy
 	always @(posedge JOY) register_joy = DI;
 
 	// Port #1F/31 xxxxxxxx00011111 
-	//wire address_match = ~((A[7:0] == 8'h1F) & M1 & ~JOY_ENABLE);
-	wire address_match = (A[7] | A[6] | A[5] | ~M1 | JOY_ENABLE);
+	//wire address_match = ~((A[5:0] == 6'h1F) & M1 & ~JOY_ENABLE);
+	wire address_match = ~(~A[7] & A[2] & A[1] & A[0] & M1 & ~JOY_ENABLE);
 	assign IORQGE = address_match;
 	assign enable = ~(address_match | RD | IORQ);
 
@@ -210,30 +225,17 @@ module keyboard
 
 	input wire rst_in,
 
-	output wire [7:0] D,
+	output wire [4:0] D,
 	output wire IORQGE,
 	output wire enable,
 
 	output wire PAUSE, MAGIC, RESET // Active Low (init?)
 );
 	reg[6:0] serial_data;
-	reg[4:0] keys [8/*sv*//*7:0*/] /*= 1*/; // 1 - key released, 0 - key pressed
+	reg[4:0] keys [8]; // 1 - key released, 0 - key pressed
 	reg REG_PAUSE, REG_MAGIC, REG_RESET;
 
-	// ToDo: set keys[] and special keys to 1 on bus /RST (do not set on self-reset on hotkey)
-/*
-    if (rst_i == 1'd0) 
-        k <= {42{1'b1}};                   // initialization on power on: set all bits
-    else
-        if (spi[0] == 1'd1)
-        begin
-            k[key_bit_num] <= key_state;   // set or clear state-bit
-            if (key_bit_num == 41)
-                k[40:0] = 41'h1FFFFFFFFFF; // cpu reset and initialization: set all bits except 'reset'
-        end
-*/
-
-	always @(posedge SK) // serial_data <= { serial_data[5:0], DAT }
+	always @(posedge SK)
 	begin
 		serial_data = serial_data << 1;
 		serial_data[0] = DAT;
@@ -245,8 +247,9 @@ module keyboard
 
 	always @(negedge rst_in or posedge STB)
 	begin
-		if(rst_in == 0) // ZX BUS Z80 reset
+		if(rst_in == 0)
 		begin
+			//{keys[0], keys[1], keys[2], keys[3], keys[4], keys[5], keys[6], keys[7]} = 5'b11111;
 			keys[0] = 5'b11111;
 			keys[1] = 5'b11111;
 			keys[2] = 5'b11111;
@@ -278,6 +281,17 @@ module keyboard
 	assign MAGIC = ~REG_MAGIC ? 1'b0 : 1'bZ;
 	assign RESET = ~REG_RESET ? 1'b0 : 1'bZ;
 
+	// Trade COMB(OR) for MUX in RTL map.
+	wire kd0, kd1, kd2, kd3, kd4;
+
+	assign kd0 = (keys[0][0] | A[8]) & (keys[1][0] | A[9]) & (keys[2][0] | A[10]) & (keys[3][0] | A[11]) & (keys[4][0] | A[12]) & (keys[5][0] | A[13]) & (keys[6][0] | A[14]) & (keys[7][0] | A[15]);
+	assign kd1 = (keys[0][1] | A[8]) & (keys[1][1] | A[9]) & (keys[2][1] | A[10]) & (keys[3][1] | A[11]) & (keys[4][1] | A[12]) & (keys[5][1] | A[13]) & (keys[6][1] | A[14]) & (keys[7][1] | A[15]);
+	assign kd2 = (keys[0][2] | A[8]) & (keys[1][2] | A[9]) & (keys[2][2] | A[10]) & (keys[3][2] | A[11]) & (keys[4][2] | A[12]) & (keys[5][2] | A[13]) & (keys[6][2] | A[14]) & (keys[7][2] | A[15]);
+	assign kd3 = (keys[0][3] | A[8]) & (keys[1][3] | A[9]) & (keys[2][3] | A[10]) & (keys[3][3] | A[11]) & (keys[4][3] | A[12]) & (keys[5][3] | A[13]) & (keys[6][3] | A[14]) & (keys[7][3] | A[15]);
+	assign kd4 = (keys[0][4] | A[8]) & (keys[1][4] | A[9]) & (keys[2][4] | A[10]) & (keys[3][4] | A[11]) & (keys[4][4] | A[12]) & (keys[5][4] | A[13]) & (keys[6][4] | A[14]) & (keys[7][4] | A[15]);
+
+	wire [4:0] half_rows_state = {kd4, kd3, kd2, kd1, kd0};
+/*
 	wire [4:0] half_rows_state =
 	(
 		((~A[8])?  keys[0] : 5'b11111) &
@@ -289,7 +303,7 @@ module keyboard
 		((~A[14])? keys[6] : 5'b11111) &
 		((~A[15])? keys[7] : 5'b11111)
 	);
-
+*/
 	// Port #FE/254 xxxxxxxx11111110
 	// What about TAPE IN port #FE bit 6?
 	wire address_partial_match = ~((A[0] == 1'b0) & M1);
@@ -297,7 +311,7 @@ module keyboard
 	assign IORQGE = address_partial_match;
 	assign enable = ~(address_partial_match | RD | IORQ);
 
-	assign D[7:0] = {3'bZZZ, half_rows_state};
+	assign D = half_rows_state;
 
 endmodule
 
@@ -329,7 +343,8 @@ module hidman_zx_bus
 );
 	wire iorqge_mouse, iorqge_keyboard, iorqge_joy;
 	wire en_m, en_k, en_j;
-	wire[7:0] d_m, d_k, d_j;
+	wire[7:0] d_m, d_j;
+	wire[4:0] d_k;
 
 	kempston_mouse mouse(MX, MY, MKEY, DI, A, M1, RD, IORQ, RST_IN, iorqge_mouse, en_m, d_m);
 	keyboard key(DAT, SK, STB, A, M1, RD, IORQ, RST_IN, d_k, iorqge_keyboard, en_k, BSRQ, NMI, RST_OUT);
@@ -338,13 +353,13 @@ module hidman_zx_bus
 	// IORQGE = 0 when address lower bits and M1 == 1 (address partial match) else = 1.
 	// Connected to 74LVC1G125 3-state buffer OE/ pin, TTL 5V output.
 	assign IORQGE = 
-		//iorqge_mouse &
+		iorqge_mouse &
 		iorqge_keyboard &
 		iorqge_joy;
 
 	assign D =
 		en_m ? d_m :
-		en_k ? d_k :
+		en_k ? {3'b111, d_k} :
 		en_j ? d_j :
 		8'bZZZZZZZZ;
 
