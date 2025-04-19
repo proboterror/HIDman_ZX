@@ -138,6 +138,10 @@ USB клавиатура / gamepad, PS/2 клавиатура, Kempston Joystick
 (C) Xrust 2021<br>
 Микроконтроллер ATmega328P, матрица ключей MT8816
 
+[Вариация безвейтового контроллера PS/2 клавиатуры для Spectrum - компактный вариант](https://zx-pk.ru/threads/35030-variatsiya-bezvejtovogo-kontrollera-ps-2-klaviatury-dlya-spectrum-kompaktnyj-variant.html)<br>
+(C) Rio444 2023<br>
+Микроконтроллер ATTiny25, EPM3064
+
 [Контроллер клавиатуры PS/2 => ZX Spectrum для ZX_RGBI2VGA-HDMI](https://t.me/rgb2vga_hdmi)<br>
 (C) Алекс Екб @Alex_Eburg 2024<br>
 Микроконтроллер RP2040, матрица ключей CH446Q
