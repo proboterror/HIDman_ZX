@@ -21,6 +21,7 @@ hidman_zx_bus hidman_zx_bus0(
 	.DI(DI),
 
 	.JOY_ENABLE(1'b0), // active low
+	.TAPE_IN(1'b0),
 
 	.A(A),
 	.M1(M1), // 1
@@ -150,22 +151,21 @@ initial begin
 	reset();
 	// ToDo: IORQGE tests: address + M1.
 /*
-	Check mouse registers state ater reset
+	Check mouse registers state after reset
 	#FADF 1111 1010 1101 1111 BUTTONS
 	#FBDF 1111 1011 1101 1111 MX
 	#FFDF 1111 1111 1101 1111 MY
 */
-/*
 	PortRead(16'hFBDF);
 	assert (D === 8'h80) else $error("MX reset failed.");
 	#10
 	PortRead(16'hFFDF);
-	assert (D === 8'h60) else $error("MY resetfailed.");
+	assert (D === 8'h60) else $error("MY reset failed.");
 	#10
 	PortRead(16'hFADF);
-	assert (D === 8'hAA) else $error("MKEY reset failed.");
+	assert (D === 8'hFF) else $error("MKEY reset failed.");
 	#10
-*/
+
 	// Set mouse controller registers
 	ControllerWrite(MX, 8'hCC);
 	#10

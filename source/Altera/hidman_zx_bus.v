@@ -37,33 +37,42 @@ module kempston_mouse
 	output wire IORQGE,
 	output wire enable,
 
-	output wire[7:0] D
+	output logic[7:0] D
 );
 
 	reg[7:0] register_x, register_y, register_key;
-/*
-	always @(negedge rst_in or posedge MX or posedge MY or posedge MKEY)
+
+	// Gluk Reset Service mouse detect code expects correct controller registers values early on power on.
+
+	always @(negedge rst_in or posedge MX)
 	begin
 		if(rst_in == 0)
-		begin
-			// Gluk Reset Service mouse detect code expects correct controller registers values early on power on.
 			register_x = 8'h80;
-			register_y = 8'h60;
-			register_key = 8'hFF;
-		end
 		else if(MX == 1)
 			register_x = DI;
+	end
+
+	always @(negedge rst_in or posedge MY)
+	begin
+		if(rst_in == 0)
+			register_y = 8'h60;
 		else if(MY == 1)
 			register_y = DI;
+	end
+
+	always @(negedge rst_in or posedge MKEY)
+	begin
+		if(rst_in == 0)
+			register_key = 8'hFF;
 		else if(MKEY == 1)
 			register_key = DI;
 	end
-*/
+/*
 	// Data written to registers on rising_edge.
 	always @(posedge MX) register_x = DI;
 	always @(posedge MY) register_y = DI;
 	always @(posedge MKEY) register_key = DI;
-
+*/
 	// Address lower bits: #DF 11011111 1x0xxx11
 	//wire address_partial_match = ~((A[7:0] == 8'hDF) & M1); // more macrocells
 	wire address_partial_match = ~(A[0] & A[1] & ~A[5] & A[7] & A[15] & M1); // A15 or DOS/ ?
@@ -72,15 +81,12 @@ module kempston_mouse
 
 	always_comb
 	begin
-		D = 8'hFF;
-
-		if (enable)
-			case ({A[10], A[8]})
-				2'b00: D = register_key; // #FA 11111010 xxxxx0x0
-				2'b01: D = register_x;   // #FB 11111011 xxxxx0x1
-				2'b11: D = register_y;   // #FF 11111111 xxxxx1x1
-				default: D = 8'hFF;
-			endcase;
+		case ({A[10], A[8]})
+			2'b00: D = register_key; // #FA 11111010 xxxxx0x0
+			2'b01: D = register_x;   // #FB 11111011 xxxxx0x1
+			2'b11: D = register_y;   // #FF 11111111 xxxxx1x1
+			default: D = 8'hFF;
+		endcase
 	end
 /*
 	wire MKEY_SEL = enable & ~A[8] & ~A[10]; // #FA 11111010 xxxxx0x0
@@ -163,6 +169,16 @@ ZX Spectrum 40-key keyboard matrix:
  ZX_KEY_MAGIC: Y:5 X:8 ?????
  ZX_KEY_RESET: Y:6 X:8
  ZX_KEY_PAUSE: Y:7 X:8
+
+ Note on keyboard keys state initial reset and hotkey initiated Z80 reset:
+ 
+ - Software like Gluk Reset Service expects keyboard state to be correct (keys released) almost immediately after power on / reset.
+ MCU with serial interface timings takes too much time to set up keys matrix after power on.
+ So, separate rst_in signal (falling edge) is generated externally some time after power on.
+ ZX BUS / Z80 RST signal not used because of:
+
+ - Keyboard can initiate Z80 reset with hotkey. Keyboard keys registers, including PAUSE, MAGIC, RESET are not reset.
+ RESET signal stays active while hotkey pressed.
 */
 /*
  8x16 Analog Switch Array Chip CH446Q
@@ -280,7 +296,7 @@ module keyboard
 	assign PAUSE = ~REG_PAUSE ? 1'b0 : 1'bZ;
 	assign MAGIC = ~REG_MAGIC ? 1'b0 : 1'bZ;
 	assign RESET = ~REG_RESET ? 1'b0 : 1'bZ;
-
+/*
 	// Trade COMB(OR) for MUX in RTL map.
 	wire kd0, kd1, kd2, kd3, kd4;
 
@@ -291,6 +307,17 @@ module keyboard
 	assign kd4 = (keys[0][4] | A[8]) & (keys[1][4] | A[9]) & (keys[2][4] | A[10]) & (keys[3][4] | A[11]) & (keys[4][4] | A[12]) & (keys[5][4] | A[13]) & (keys[6][4] | A[14]) & (keys[7][4] | A[15]);
 
 	wire [4:0] half_rows_state = {kd4, kd3, kd2, kd1, kd0};
+*/
+	wire [4:0] half_rows_state =
+		  (keys[0] | {5{A[8]}})
+		& (keys[1] | {5{A[9]}})
+		& (keys[2] | {5{A[10]}})
+		& (keys[3] | {5{A[11]}})
+		& (keys[4] | {5{A[12]}})
+		& (keys[5] | {5{A[13]}})
+		& (keys[6] | {5{A[14]}})
+		& (keys[7] | {5{A[15]}});
+
 /*
 	wire [4:0] half_rows_state =
 	(
@@ -305,7 +332,6 @@ module keyboard
 	);
 */
 	// Port #FE/254 xxxxxxxx11111110
-	// What about TAPE IN port #FE bit 6?
 	wire address_partial_match = ~((A[0] == 1'b0) & M1);
 	//wire address_partial_match = ~((A[7:0] == 8'hFE) & M1);
 	assign IORQGE = address_partial_match;
@@ -324,6 +350,7 @@ module hidman_zx_bus
 	input wire[7:0] DI,
 
 	input wire JOY_ENABLE, // active low
+	input wire TAPE_IN,
 
 	input wire [15:0] A,
 	input wire M1, // 1
@@ -357,9 +384,10 @@ module hidman_zx_bus
 		iorqge_keyboard &
 		iorqge_joy;
 
+	// Is it correct to assign "1" value bits to open collector output?
 	assign D =
 		en_m ? d_m :
-		en_k ? {3'b111, d_k} :
+		en_k ? {1'b1, 1'b1 /*TAPE_IN*/, 1'b1, d_k} : // TAPE IN on port #FE bit 6
 		en_j ? d_j :
 		8'bZZZZZZZZ;
 
