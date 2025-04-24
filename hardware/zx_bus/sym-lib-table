@@ -2,4 +2,5 @@
   (version 7)
   (lib (name "CH559L")(type "KiCad")(uri "${KIPRJMOD}/CH559L.kicad_sym")(options "")(descr ""))
   (lib (name "EPM3128")(type "KiCad")(uri "${KIPRJMOD}/EPM3128.kicad_sym")(options "")(descr ""))
+  (lib (name "IP4220CZ6")(type "KiCad")(uri "${KIPRJMOD}/IP4220CZ6.kicad_sym")(options "")(descr ""))
 )
