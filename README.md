@@ -77,7 +77,7 @@
 ## Схема
 ![scheme](images/scheme_zx-bus.png)
 ## Плата
-![front](images/pcb_zx-bus_front.png.png)
+![front](images/pcb_zx-bus_front.png)
 ![back](images/pcb_zx-bus_back.png)
 ![pcb](images/pcb_zx-bus.png)
 ![3D front](images/pcb_3D_front.png)
