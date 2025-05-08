@@ -6,30 +6,30 @@
 #include "defs.h"
 #include "linkedlist.h"
 
-// ���ӳ��򷵻�״̬��
-#define ERR_SUCCESS         0x00    // �����ɹ�
-#define ERR_USB_CONNECT     0x15    /* ��⵽USB�豸�����¼�,�Ѿ����� */
-#define ERR_USB_DISCON      0x16    /* ��⵽USB�豸�Ͽ��¼�,�Ѿ��Ͽ� */
-#define ERR_USB_BUF_OVER    0x17    /* USB��������������������̫�໺������� */
-#define ERR_USB_DISK_ERR    0x1F    /* USB�洢������ʧ��,�ڳ�ʼ��ʱ������USB�洢����֧��,�ڶ�д�����п����Ǵ����𻵻����Ѿ��Ͽ� */
-#define ERR_USB_TRANSFER    0x20    /* NAK/STALL�ȸ����������0x20~0x2F */
-#define ERR_USB_UNSUPPORT   0xFB    /*��֧�ֵ�USB�豸*/
-#define ERR_USB_UNKNOWN     0xFE    /*�豸��������*/
+// 各子程序返回状态码
+#define ERR_SUCCESS         0x00    // 操作成功
+#define ERR_USB_CONNECT     0x15    /* 检测到USB设备连接事件,已经连接 */
+#define ERR_USB_DISCON      0x16    /* 检测到USB设备断开事件,已经断开 */
+#define ERR_USB_BUF_OVER    0x17    /* USB传输的数据有误或者数据太多缓冲区溢出 */
+#define ERR_USB_DISK_ERR    0x1F    /* USB存储器操作失败,在初始化时可能是USB存储器不支持,在读写操作中可能是磁盘损坏或者已经断开 */
+#define ERR_USB_TRANSFER    0x20    /* NAK/STALL等更多错误码在0x20~0x2F */
+#define ERR_USB_UNSUPPORT   0xFB    /*不支持的USB设备*/
+#define ERR_USB_UNKNOWN     0xFE    /*设备操作出错*/
 
 
-/* ����״̬��������USB������ʽ */
-/*   λ4ָʾ��ǰ���յ����ݰ��Ƿ�ͬ��, 0=��ͬ��, 1-ͬ�� */
-/*   λ3-λ0ָʾUSB�豸��Ӧ��: 0010=ACK, 1010=NAK, 1110=STALL, 0011=DATA0, 1011=DATA1, XX00=Ӧ�������߳�ʱ��Ӧ�� */
+/* 以下状态代码用于USB主机方式 */
+/*   位4指示当前接收的数据包是否同步, 0=不同步, 1-同步 */
+/*   位3-位0指示USB设备的应答: 0010=ACK, 1010=NAK, 1110=STALL, 0011=DATA0, 1011=DATA1, XX00=应答错误或者超时无应答 */
 #ifndef	USB_INT_RET_ACK
-#define	USB_INT_RET_ACK		     USB_PID_ACK		/* ����:����OUT/SETUP���񷵻�ACK */
-#define	USB_INT_RET_NAK		     USB_PID_NAK		/* ����:����NAK */
-#define	USB_INT_RET_STALL	     USB_PID_STALL	/* ����:����STALL */
-#define	USB_INT_RET_DATA0	     USB_PID_DATA0	/* ����:����IN���񷵻�DATA0 */
-#define	USB_INT_RET_DATA1	     USB_PID_DATA1	/* ����:����IN���񷵻�DATA1 */
-#define	USB_INT_RET_TOUT	     0x00			/* ����:Ӧ�������߳�ʱ��Ӧ�� */
-#define	USB_INT_RET_TOUT1	     0x04			/* ����:Ӧ�������߳�ʱ��Ӧ�� */
-#define	USB_INT_RET_TOUT2	     0x08			/* ����:Ӧ�������߳�ʱ��Ӧ�� */
-#define	USB_INT_RET_TOUT3	     0x0C			/* ����:Ӧ�������߳�ʱ��Ӧ�� */
+#define	USB_INT_RET_ACK		     USB_PID_ACK		/* 错误:对于OUT/SETUP事务返回ACK */
+#define	USB_INT_RET_NAK		     USB_PID_NAK		/* 错误:返回NAK */
+#define	USB_INT_RET_STALL	     USB_PID_STALL	/* 错误:返回STALL */
+#define	USB_INT_RET_DATA0	     USB_PID_DATA0	/* 错误:对于IN事务返回DATA0 */
+#define	USB_INT_RET_DATA1	     USB_PID_DATA1	/* 错误:对于IN事务返回DATA1 */
+#define	USB_INT_RET_TOUT	     0x00			/* 错误:应答错误或者超时无应答 */
+#define	USB_INT_RET_TOUT1	     0x04			/* 错误:应答错误或者超时无应答 */
+#define	USB_INT_RET_TOUT2	     0x08			/* 错误:应答错误或者超时无应答 */
+#define	USB_INT_RET_TOUT3	     0x0C			/* 错误:应答错误或者超时无应答 */
 #endif
 
 //number of root hub ports

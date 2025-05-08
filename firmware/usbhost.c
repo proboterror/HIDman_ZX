@@ -502,7 +502,7 @@ BOOL EnumerateRootHubPort(UINT8 port)
 //	mDelaymS(500);
 
 #if 1
-	for (i = 0, s = 0; i < 10; i++) // �ȴ�USB�豸��λ����������,100mS��ʱ
+	for (i = 0, s = 0; i < 10; i++) // 等待USB设备复位后重新连接,100mS超时
 	{
 		EnableRootHubPort(port);
 
@@ -510,23 +510,23 @@ BOOL EnumerateRootHubPort(UINT8 port)
 	}
 
 #else
-	for (i = 0, s = 0; i < 100; i++) // �ȴ�USB�豸��λ����������,100mS��ʱ
+	for (i = 0, s = 0; i < 100; i++) // 等待USB设备复位后重新连接,100mS超时
 	{
 		mDelaymS(1);
-		if (EnableRootHubPort(port) == ERR_SUCCESS) // ʹ��ROOT-HUB�˿�
+		if (EnableRootHubPort(port) == ERR_SUCCESS) // 使能ROOT-HUB端口
 		{
 			i = 0;
-			s++; // ��ʱ�ȴ�USB�豸���Ӻ��ȶ�
+			s++; // 计时等待USB设备连接后稳定
 			if (s > 10 * retry)
 			{
-				break; // �Ѿ��ȶ�����15mS
+				break; // 已经稳定连接15mS
 			}
 		}
 	}
 
 	TRACE1("i:%d\r\n", (UINT16)i);
 
-	if (i) // ��λ���豸û������
+	if (i) // 复位后设备没有连接
 	{
 		DisableRootHubPort(port);
 		TRACE1("Disable root hub %1d# port because of disconnect\n", (UINT16)port);
@@ -651,7 +651,7 @@ BOOL EnumerateRootHubPort(UINT8 port)
 					DEBUGOUT("checkn port %d\n", i);
 					mDelaymS(50);
 
-					SelectHubPort(port, EXHUB_PORT_NONE); //�л���hub��ַ
+					SelectHubPort(port, EXHUB_PORT_NONE); //切换到hub地址
 
 					s = GetHubPortStatus(pUsbDevice, i + 1, &hubPortStatus, &hubPortChange);
 					if (s != ERR_SUCCESS)
