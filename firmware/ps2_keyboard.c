@@ -17,9 +17,14 @@ SBIT(PS2_KEY_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
 
 // Code originated from murmulator platform (https://murmulator.ru) PS/2 keyboard driver source code (drivers/ps2/ps2.c) with modifications.
 
+// Keyboard input buffer can be changed from PS/2 INT0, USB interrupt and main loop.
+// INT_NO_INT0 interrupt have higher priority (0) than USB interrupt INT_NO_USB (8),
+// so interrupts should be disabled while changing buffer from USB interrupt handler and main loop.
 volatile __data uint8_t ps2bufsize = 0;
 volatile __data uint8_t ps2buffer[KBD_BUFFER_SIZE] /*= {}*/;
 
+// Intended to call from USB interrupt.
+// Warning: can break multi-byte PS/2 scancode transfer.
 bool ps2_add_raw_code(const uint8_t *data)
 {
 	uint8_t len = *data;
@@ -27,15 +32,19 @@ bool ps2_add_raw_code(const uint8_t *data)
 	if(ps2bufsize + len >= KBD_BUFFER_SIZE)
 		return false;
 
-	// interrupt INT0 unsafe, also called from USB interrupt
+	EX0 = 0; // Disable PS/2 keyboard interrupt while changing keyboard input buffer.
+
 	while(len--)
 	{
 		ps2buffer[ps2bufsize++] = *(++data);
 	}
 
+	EX0 = 1; // Enable PS/2 keyboard interupt.
+
 	return true;
 }
 
+// Intended to call from main update loop.
 uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 {
 	uint8_t len = 0;
@@ -73,14 +82,20 @@ uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 	if (len > 2)
 		*code_2 = ps2buffer[2];
 
-	// consider if interupt/thread safe? (totally not)
-	// ToDo: ring buffer queue, disable clock interrupt.
+	// Disable global interupts while changing keyboard input buffer.
+	// Warning: Some memory accesses (especially XDATA) may rely on interrupt-driven banking schemes.
+	// Disabling interrupts can break banked memory pointer access,
+	// and lcall (long call) jumps to a function in banked memory (like _gptrget).
+	E_DIS = 1;
+
 	for (uint32_t i = len; i < KBD_BUFFER_SIZE; i++)
 	{
 		ps2buffer[i - len] = ps2buffer[i];
 	}
 
 	ps2bufsize -= len;
+
+	E_DIS = 0; // Enable global interrupts.
 
 	return len;
 }
@@ -138,6 +153,8 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 		}
 		else                  // Good so save byte in buffer
 		{
+			// Assume USB interrupt have lower priority
+			// and cannot preempt while changing keyboard buffer.
 			if (ps2bufsize < KBD_BUFFER_SIZE)
 			{
 				ps2buffer[ps2bufsize++] = incoming;
