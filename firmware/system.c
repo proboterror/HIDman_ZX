@@ -218,7 +218,7 @@ void pinMode(unsigned char port, unsigned char pin, unsigned char mode)
 		break;
 	case PIN_MODE_OUTPUT: //Push-pull output, high and low level strong drive
 		PORT_CFG &= ~(bP0_OC << port);
-		*dir[port] |= ~(1 << pin);
+		*dir[port] |= 1 << pin;
 		break;
 	case PIN_MODE_OUTPUT_OPEN_DRAIN: //Open drain output, no pull-up, support input
 		PORT_CFG |= (bP0_OC << port);
