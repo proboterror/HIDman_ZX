@@ -196,6 +196,10 @@ enum mouse_resolution
 SBIT(PS2_MOUSE_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
 SBIT(PS2_MOUSE_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
 
+SBIT(MX, PADR(MX_PORT), MX_PIN);
+SBIT(MY, PADR(MY_PORT), MY_PIN);
+SBIT(MKEY, PADR(MKEY_PORT), MKEY_PIN);
+
 #define DI_BUS_SET_DELAY 4
 #define REGISTER_SET_DELAY 4
 
@@ -724,9 +728,9 @@ void ps2_mouse_init_registers()
 	// Push-pull output, high and low level strong drive.
 	portMode(DI_PORT, PIN_MODE_OUTPUT);
 
-	low(MX_PORT, MX_PIN);
-	low(MY_PORT, MY_PIN);
-	low(MKEY_PORT, MKEY_PIN);
+	low(MX);
+	low(MY);
+	low(MKEY);
 
 	// Set initial MX, MY, MKEY values to CPLD controller registers. Changed after first PS/2 mouse event packet received.
 	// Data written to registers on rising_edge.
@@ -735,21 +739,21 @@ void ps2_mouse_init_registers()
 
 	PORT(DI_PORT) = 0x80;
 	_delay_us(DI_BUS_SET_DELAY);
-	high(MX_PORT, MX_PIN);
+	high(MX);
 	_delay_us(REGISTER_SET_DELAY);
-	low(MX_PORT, MX_PIN);
+	low(MX);
 
 	PORT(DI_PORT) = 0x60;
 	_delay_us(DI_BUS_SET_DELAY);
-	high(MY_PORT, MY_PIN);
+	high(MY);
 	_delay_us(REGISTER_SET_DELAY);
-	low(MY_PORT, MY_PIN);
+	low(MY);
 
 	PORT(DI_PORT) = 0xFF;
 	_delay_us(DI_BUS_SET_DELAY);
-	high(MKEY_PORT, MKEY_PIN);
+	high(MKEY);
 	_delay_us(REGISTER_SET_DELAY);
-	low(MKEY_PORT, MKEY_PIN);
+	low(MKEY);
 }
 
 void set_controller_registers()
@@ -758,15 +762,15 @@ void set_controller_registers()
 	// Data written to registers on rising_edge.
 	PORT(DI_PORT) = mouse_x;
 	_delay_us(DI_BUS_SET_DELAY);
-	high(MX_PORT, MX_PIN);
+	high(MX);
 	_delay_us(REGISTER_SET_DELAY);
-	low(MX_PORT, MX_PIN);
+	low(MX);
 
 	PORT(DI_PORT) = mouse_y;
 	_delay_us(DI_BUS_SET_DELAY);
-	high(MY_PORT, MY_PIN);
+	high(MY);
 	_delay_us(REGISTER_SET_DELAY);
-	low(MY_PORT, MY_PIN);
+	low(MY);
 
 #if ENABLE_WHEEL
 	PORT(DI_PORT) = (~mouse_buttons & 0b00000111) | (mouse_z << 4) | (0b00001000); // Bit 4 is 4th mouse button (not pressed)
@@ -774,9 +778,9 @@ void set_controller_registers()
 	PORT(DI_PORT) = (~mouse_buttons & 0b00000111) | (0b11111000); // Unused port bits set to 1 (mouse_z axis, 4th mouse button)
 #endif
 	_delay_us(DI_BUS_SET_DELAY);
-	high(MKEY_PORT, MKEY_PIN);
+	high(MKEY);
 	_delay_us(REGISTER_SET_DELAY);
-	low(MKEY_PORT, MKEY_PIN);
+	low(MKEY);
 
 #if DEBUG
 	char buf[5];

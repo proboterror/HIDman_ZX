@@ -14,6 +14,6 @@ enum PORT_ADDR
 	ADDR_P3 = 0xB0
 };
 
-// CH559: The Pn Register.
-#define low(PORT_, PIN_) PORT(PORT_) &= ~(1 << PIN_)
-#define high(PORT_, PIN_) PORT(PORT_) |= (1 << PIN_)
+// CH559 / 8051: set SFR pin register
+#define low(sfr) sfr = 0
+#define high(sfr) sfr = 1
