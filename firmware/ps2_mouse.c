@@ -27,6 +27,7 @@
 #include "type.h"
 #include "system.h"
 #include "gpio.h"
+#include "keyboardled.h"
 
 /*
 	Reference:
@@ -795,6 +796,9 @@ void set_controller_registers()
 	_uitoa((mouse_buttons & 0b00000111), buf, 10);
 	DEBUGOUT(" %s",buf);
 #endif // DEBUG
+
+	if(mouse_buttons & 0b111)
+		setLED(false); // Turn off LED for a while
 }
 
 volatile bool timer_timeout = false;

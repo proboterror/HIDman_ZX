@@ -6,6 +6,7 @@
 #include "type.h"
 #include "system.h"
 #include "gpio.h"
+#include "keyboardled.h"
 
 #define PS2_CLK_PORT 3
 #define PS2_CLK_PIN 2
@@ -73,6 +74,8 @@ uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 
 	if (ps2bufsize < len)
 		return 0;
+
+	setLED(false); // Turn off LED for a while
 
 	*code_0 = ps2buffer[0];
 	

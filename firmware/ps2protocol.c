@@ -12,7 +12,6 @@
 #include "usbhost.h"
 #include "ps2protocol.h"
 #include "mouse.h"
-#include "keyboardled.h"
 #include "system.h"
 #include "scancode.h"
 #include "ps2_keyboard.h"
@@ -248,9 +247,6 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 {
 	__xdata HID_REPORT *descReport;
 	__xdata LinkedList *currSegNode;
-
-	// Turn off LEDs for a while
-	setLED(false);
 
 	if (interface->usesReports)
 	{
