@@ -196,8 +196,8 @@ enum mouse_resolution
 SBIT(PS2_MOUSE_CLOCK, PADR(PS2_CLK_PORT), PS2_CLK_PIN);
 SBIT(PS2_MOUSE_DATA, PADR(PS2_DATA_PORT), PS2_DATA_PIN);
 
-#define DI_BUS_SET_DELAY 1
-#define REGISTER_SET_DELAY 1
+#define DI_BUS_SET_DELAY 4
+#define REGISTER_SET_DELAY 4
 
 #define _delay_us mDelayuS
 
@@ -245,47 +245,6 @@ volatile uint8_t ps2_rx_buf[PS2_BUF_SIZE]; // PS/2 receive ring buffer
 volatile uint8_t ps2_rx_buf_w; // ring buffer write head
 volatile uint8_t ps2_rx_buf_r; // ring buffer read tail
 volatile uint8_t ps2_rx_buf_count; // bytes count in receive buffer
-
-typedef enum
-{
-	MCLK,
-	MDATA
-} mouse_pin_t;
-
-// PS/2 interface data and clock lines are both open collector.
-// Configuring port as input (DDRx register) switches it to high impendance mode,
-// writing high to PORTx register enables internal weak pull-up resistor.
-void gohi(mouse_pin_t pin)
-{
-	switch (pin)
-	{
-	case MDATA:
-		high(PS2_DATA_PORT, PS2_DATA_PIN);
-		input(PS2_DATA_PORT, PS2_DATA_PIN);
-		break;
-	case MCLK:
-		high(PS2_CLK_PORT, PS2_CLK_PIN);
-		input(PS2_CLK_PORT, PS2_CLK_PIN);
-		break;
-	};
-}
-
-// Port configured as output and connected to ground.
-void golo(mouse_pin_t pin)
-{
-	switch (pin)
-	{
-	case MDATA:
-		low(PS2_DATA_PORT, PS2_DATA_PIN);
-		output(PS2_DATA_PORT, PS2_DATA_PIN);
-		break;
-	case MCLK:
-		low(PS2_CLK_PORT, PS2_CLK_PIN);
-		output(PS2_CLK_PORT, PS2_CLK_PIN);
-
-		break;
-	};
-}
 
 // Enable INT1 external interrupt on clock change.
 void enable_int1(void)
@@ -368,26 +327,21 @@ void ext1_interrupt(void) __interrupt(INT_NO_INT1)
 		{
 			default: // Data byte
 				if (ps2_data & 1)
-					gohi(MDATA);
-					//input(PS2_DATA_PORT, PS2_DATA_PIN);
+					PS2_MOUSE_DATA = 1;
 				else
-					golo(MDATA);
-					//output(PS2_DATA_PORT, PS2_DATA_PIN);
+					PS2_MOUSE_DATA = 0;
 
 				ps2_data >>= 1;
 				break;
 			case 3: // Parity bit
 				if (ps2_parity)
-					gohi(MDATA);
-					//input(PS2_DATA_PORT, PS2_DATA_PIN);
+					PS2_MOUSE_DATA = 1;
 				else
-					golo(MDATA);
-					//output(PS2_DATA_PORT, PS2_DATA_PIN);
+					PS2_MOUSE_DATA = 0;
 
 				break;
 			case 2: // Stop bit
-				gohi(MDATA); // Stop bit should be 1
-				//input(PS2_DATA_PORT, PS2_DATA_PIN);
+				PS2_MOUSE_DATA = 1; // Stop bit should be 1
 				break;
 			case 1: // Receive acknowledge bit
 				if (PS2_MOUSE_DATA)
@@ -443,9 +397,9 @@ void ps2_init_port(void)
 	pinMode(PS2_CLK_PORT, PS2_CLK_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 	pinMode(PS2_DATA_PORT, PS2_DATA_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 	// Release clock and data lines.
-	//gohi(MCLK); // ?
-	golo(MCLK); // ??? CH559: Critical for init inhibit / send command sequence.
-	gohi(MDATA); // ?
+	//gohi(PS2_MOUSE_CLOCK); // ?
+	PS2_MOUSE_CLOCK = 0; // ??? CH559: Critical for init inhibit / send command sequence.
+	PS2_MOUSE_DATA = 1; // ?
 
 	// Reset receive biffer.
 	ps2_rx_buf_w = 0;
@@ -496,17 +450,17 @@ void mouse_write_byte_async(uint8_t data) // ps2_write
 	disable_int1();
 
 	// Inhibit host to device communication by bringing clock low for 100 us.
-	golo(MCLK);
+	PS2_MOUSE_CLOCK = 0;
 	_delay_us(100);
 
-	golo(MDATA); // This is start bit = 0
+	PS2_MOUSE_DATA = 0; // This is start bit = 0
 
 	_delay_us(10); // Required rise time for data line.
 
 	// Release clock line.
 	// Data sent from the host to the device is read on the rising edge of the clock signal.
 	//input(PS2_CLK_PORT, PS2_CLK_PIN);
-	gohi(MCLK); // Seems to be critical for CH559 implementation.
+	PS2_MOUSE_CLOCK = 1; // Seems to be critical for CH559 implementation.
 
 	// Reset receive buffer.
 	ps2_rx_buf_count = 0;

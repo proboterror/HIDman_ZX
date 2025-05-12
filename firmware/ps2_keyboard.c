@@ -169,13 +169,11 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 
 void ps2_keyboard_init(void)
 {
+	// Open drain output, no pull-up, support input
 	pinMode(PS2_CLK_PORT, PS2_CLK_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 	pinMode(PS2_DATA_PORT, PS2_DATA_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 
 	PS2_KEY_CLOCK = PS2_KEY_DATA = 1;
-
-	input(PS2_CLK_PORT, PS2_CLK_PIN);
-	input(PS2_DATA_PORT, PS2_DATA_PIN);
 
 	EX0 = 1; // enable external interrupt INT0 or LED interrupt
 	IT0 = 1; // INT0 interrupt type: 0=low level action, 1=falling edge action

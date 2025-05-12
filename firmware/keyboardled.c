@@ -11,14 +11,16 @@ UINT8 GetKeyboardLedStatus(void)
 	return 0x00;
 }
 
-// Keyboard / mouse activity LED connected to P1.6 pin, push-pull mode.
+SBIT(LED, PADR(1), 7);
+
+// Keyboard / mouse activity LED connected to P1.7 pin, push-pull mode.
 void setLED(bool state)
 {
 	if(state)
-		high(1, 7);
+		LED = 1;
 	else
 	{
-		low(1, 7);
+		LED = 0;
 		LEDDelayMs = 33;
 	}
 }

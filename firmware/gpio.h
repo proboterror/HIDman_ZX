@@ -14,10 +14,6 @@ enum PORT_ADDR
 	ADDR_P3 = 0xB0
 };
 
-// CH559: Pn_DIR Register: 1 makes the corresponding pin an output, and a 0 makes the corresponding pin an input.
-#define input(PORT_, PIN_) DIR(PORT_) &= ~(1 << PIN_)
-#define output(PORT_, PIN_) DIR(PORT_) |= (1 << PIN_)
-
 // CH559: The Pn Register.
 #define low(PORT_, PIN_) PORT(PORT_) &= ~(1 << PIN_)
 #define high(PORT_, PIN_) PORT(PORT_) |= (1 << PIN_)
