@@ -9493,6 +9493,10 @@
 		(uuid "eeea6131-0537-46b0-9851-4de29dc9590b")
 	)
 	(no_connect
+		(at 63.5 50.8)
+		(uuid "f0d641e3-12c7-47a7-8c1e-9de82e8b8cb6")
+	)
+	(no_connect
 		(at 270.51 118.11)
 		(uuid "f0ffdda0-069a-45f3-97a9-c12a5b43054c")
 	)
@@ -9876,16 +9880,6 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 50.8) (xy 71.12 50.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2b5f0180-3d03-4910-8f11-aea19f346b3e")
-	)
-	(wire
-		(pts
 			(xy 327.66 85.09) (xy 336.55 85.09)
 		)
 		(stroke
@@ -10053,16 +10047,6 @@
 			(type default)
 		)
 		(uuid "4695c9ff-58c8-4447-82f9-9e866a5db93f")
-	)
-	(wire
-		(pts
-			(xy 124.46 45.72) (xy 132.08 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "46b507a3-bb5e-46f7-9e1c-e44cd9de3ef7")
 	)
 	(wire
 		(pts
@@ -13280,17 +13264,6 @@
 		)
 		(uuid "9e5504d9-e021-44ab-9663-edbfc441169f")
 	)
-	(label "P3_6"
-		(at 127 45.72 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "a1a48e9a-754f-48ee-8db4-248f71490f59")
-	)
 	(label "DOS{slash}"
 		(at 254 191.77 0)
 		(fields_autoplaced yes)
@@ -14358,73 +14331,6 @@
 			(project "hidman_zx_bus"
 				(path "/3450efc4-f02c-4d95-a19b-bf60e75dcf1f"
 					(reference "U6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 147.32 45.72 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "08696a2f-1bd4-4d52-aefd-852cfaa32ad3")
-		(property "Reference" "#PWR034"
-			(at 153.67 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 151.13 45.7199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 147.32 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 147.32 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 147.32 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "840e98d3-2e98-4aeb-b306-3881559996ea")
-		)
-		(instances
-			(project "hidman_zx_bus"
-				(path "/3450efc4-f02c-4d95-a19b-bf60e75dcf1f"
-					(reference "#PWR034")
 					(unit 1)
 				)
 			)
@@ -15828,74 +15734,6 @@
 			(project "hidman_zx_bus"
 				(path "/3450efc4-f02c-4d95-a19b-bf60e75dcf1f"
 					(reference "#PWR064")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Switch:SW_DIP_x01")
-		(at 139.7 45.72 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "26983d02-b772-4e2a-8938-cb54d453b16d")
-		(property "Reference" "SW3"
-			(at 139.7 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "BOOT1"
-			(at 139.7 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
-			(at 139.7 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 139.7 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "1x DIP Switch, Single Pole Single Throw (SPST) switch, small symbol"
-			(at 139.7 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "3752ef61-ab2b-4496-a0a2-1597561ec018")
-		)
-		(pin "1"
-			(uuid "0f2573a4-a4a3-40e3-b74b-85ce20d140f6")
-		)
-		(instances
-			(project "hidman_zx_bus"
-				(path "/3450efc4-f02c-4d95-a19b-bf60e75dcf1f"
-					(reference "SW3")
 					(unit 1)
 				)
 			)
@@ -21542,16 +21380,15 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 135.89 20.32 0)
+		(at 135.89 20.32 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c01ac1b7-7a5e-4731-ba5d-92ffba46874f")
 		(property "Reference" "D1"
-			(at 134.3025 13.97 0)
+			(at 135.89 13.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21559,7 +21396,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 134.3025 16.51 0)
+			(at 135.89 16.51 0)
 			(effects
 				(font
 					(size 1.27 1.27)
