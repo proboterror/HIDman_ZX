@@ -159,11 +159,12 @@ void GPIOInit(void)
 
 	// 1.0, 1.1, 1.2 are ZX Kempston mouse registers MX, MY, MKEY strobe output,
 	// 1.3, 1.4, 1.5 are CH446Q ZX keyboard matrix DATA, SCLK, STROBE output,
-	// 1.6 are keyboard activity LED output.
-	P1_DIR = 0b01000000;
+	// 1.6 are Kempston joystick JOY strobe output,
+	// 1.7 are keyboard activity LED output.
+	P1_DIR = 0xFF;
 	PORT_CFG &= ~bP1_OC; // push pull
 	P1_PU = 0x00;		 // no pullups
-	P1 = 0b01000000;	 // default pin states
+	P1 = 0b00000000;	 // default pin states
 
 	// port2 setup
 	P2_DIR = 0b00000111; // 2.0, 2.1, 2.2 are GOTEK buttons outputs
@@ -200,10 +201,15 @@ void ClockInit(void)
 	PLL_CFG = (24 << 0) | (6 << 5);
 }
 
+// Ports P0-P3 support pure input, push-pull output and standard bi-direction modes,
+// P4 supports pure input and push-pull output modes.
+// More efficient preprocessor implementation sample:
+// https://github.com/wagiminator/MCU-Templates/blob/main/CH559/template/src/gpio.h
 void pinMode(unsigned char port, unsigned char pin, unsigned char mode)
 {
-	volatile unsigned char *dir[] = {&P0_DIR, &P1_DIR, &P2_DIR, &P3_DIR};
-	volatile unsigned char *pu[] = {&P0_PU, &P1_PU, &P2_PU, &P3_PU};
+	static uint8_t *dir[] = {&P0_DIR, &P1_DIR, &P2_DIR, &P3_DIR};
+	static uint8_t *pu[] = {&P0_PU, &P1_PU, &P2_PU, &P3_PU};
+
 	switch (mode)
 	{
 	case PIN_MODE_INPUT: //Input only, no pull up
@@ -220,22 +226,22 @@ void pinMode(unsigned char port, unsigned char pin, unsigned char mode)
 		PORT_CFG &= ~(bP0_OC << port);
 		*dir[port] |= 1 << pin;
 		break;
-	case PIN_MODE_OUTPUT_OPEN_DRAIN: //Open drain output, no pull-up, support input
+	case PIN_MODE_OUTPUT_OPEN_DRAIN: //Open drain output, no pull-up, support input (P0-P3 only)
 		PORT_CFG |= (bP0_OC << port);
 		*dir[port] &= ~(1 << pin);
 		*pu[port] &= ~(1 << pin);
 		break;
-	case PIN_MODE_OUTPUT_OPEN_DRAIN_2CLK: //Open-drain output, no pull-up, only drives 2 clocks high when the transition output goes from low to high
+	case PIN_MODE_OUTPUT_OPEN_DRAIN_2CLK: //Open-drain output, no pull-up, only drives 2 clocks high when the transition output goes from low to high (P0-P3 only)
 		PORT_CFG |= (bP0_OC << port);
 		*dir[port] |= 1 << pin;
 		*pu[port] &= ~(1 << pin);
 		break;
-	case PIN_MODE_INPUT_OUTPUT_PULLUP: //Weakly bidirectional (standard 51 mode), open drain output, with pull-up
+	case PIN_MODE_INPUT_OUTPUT_PULLUP: //Weakly bidirectional (standard 51 mode), open drain output, with pull-up (P0-P3 only)
 		PORT_CFG |= (bP0_OC << port);
 		*dir[port] &= ~(1 << pin);
 		*pu[port] |= 1 << pin;
 		break;
-	case PIN_MODE_INPUT_OUTPUT_PULLUP_2CLK: //Quasi-bidirectional (standard 51 mode), open-drain output, with pull-up, when the transition output is low to high, only drives 2 clocks high
+	case PIN_MODE_INPUT_OUTPUT_PULLUP_2CLK: //Quasi-bidirectional (standard 51 mode), open-drain output, with pull-up, when the transition output is low to high, only drives 2 clocks high (P0-P3 only)
 		PORT_CFG |= (bP0_OC << port);
 		*dir[port] |= 1 << pin;
 		*pu[port] |= 1 << pin;
