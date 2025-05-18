@@ -161,8 +161,8 @@ enum mouse_commands
 
 enum mouse_response
 {
-	MOUSE_ACK = 0xFA, // Reset acknowledge OK
-	MOUSE_NAK = 0xFE, // Reset acknowledge fail
+	MOUSE_ACK = 0xFA, // Acknowledge OK
+	MOUSE_NAK = 0xFE, // Acknowledge fail
 	MOUSE_ERROR = 0xFC, // Mouse error
 	MOUSE_RESET_OK = 0xAA, // Post-reset self test passed
 };
@@ -241,27 +241,35 @@ typedef enum
 
 #define PS2_BUF_SIZE 255 // PS/2 receive buffer size
 
-volatile ps2_state_t ps2_state = PS2_STATE_OK;
-volatile uint8_t ps2_bitcount; // send / receive data handler remaining bits counter
-volatile uint8_t ps2_data; // send / receive one byte buffer
-volatile uint8_t ps2_parity; // sending byte parity
+volatile __data ps2_state_t ps2_state = PS2_STATE_OK;
+volatile __data uint8_t ps2_bitcount; // send / receive data handler remaining bits counter
+volatile __data uint8_t ps2_data; // send / receive one byte buffer
+volatile __data uint8_t ps2_parity; // sending byte parity
 
 volatile uint8_t ps2_rx_buf[PS2_BUF_SIZE]; // PS/2 receive ring buffer
 volatile uint8_t ps2_rx_buf_w; // ring buffer write head
 volatile uint8_t ps2_rx_buf_r; // ring buffer read tail
 volatile uint8_t ps2_rx_buf_count; // bytes count in receive buffer
 
-// Enable INT1 external interrupt on clock change.
-void enable_int1(void)
+
+inline void clear_delayed_int1(void)
 {
-	EX1 = 1; // Enable external interrupt INT1
-	IT1 = 1; // INT1 interrupt type: 0=low level action, 1=falling edge action
+	IE1 = 0; // Clear delayed INT1 interrupt state.
+	// Potentional issue: if an external signal falling edge occurs between clearing IE1 and setting EX1,
+	// the IE1 flag could be set again before the interrupt is enabled,
+	// resulting in unwanted interrupt handler call and shifted transmited / received data bits.
+}
+
+// Enable INT1 external interrupt on clock change.
+inline void enable_int1(void)
+{
+	EX1 = 1; // Enable INT1 interrupt.
 }
 
 // Disable INT1 external interrupt on clock change.
-void disable_int1(void)
+inline void disable_int1(void)
 {
-	EX1 = 0;
+	EX1 = 0; // Disable INT1 interrupt.
 }
 
 // Store byte received from PS/2 mouse device in receive buffer.
@@ -401,10 +409,10 @@ void ps2_init_port(void)
 	// Switch PS/2 port to open collector mode with input support and external pullups.
 	pinMode(PS2_CLK_PORT, PS2_CLK_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
 	pinMode(PS2_DATA_PORT, PS2_DATA_PIN, PIN_MODE_OUTPUT_OPEN_DRAIN);
+
 	// Release clock and data lines.
-	//gohi(PS2_MOUSE_CLOCK); // ?
-	PS2_MOUSE_CLOCK = 0; // ??? CH559: Critical for init inhibit / send command sequence.
-	PS2_MOUSE_DATA = 1; // ?
+	PS2_MOUSE_CLOCK = 1;
+	PS2_MOUSE_DATA = 1;
 
 	// Reset receive biffer.
 	ps2_rx_buf_w = 0;
@@ -414,6 +422,8 @@ void ps2_init_port(void)
 	// Set clock interrupt handler state.
 	ps2_state = PS2_STATE_READ;
 	ps2_bitcount = 11;
+
+	IT1 = 1; // INT1 interrupt type: 0=low level action, 1=falling edge action.
 
 	enable_int1();
 }
@@ -462,11 +472,6 @@ void mouse_write_byte_async(uint8_t data) // ps2_write
 
 	_delay_us(10); // Required rise time for data line.
 
-	// Release clock line.
-	// Data sent from the host to the device is read on the rising edge of the clock signal.
-	//input(PS2_CLK_PORT, PS2_CLK_PIN);
-	PS2_MOUSE_CLOCK = 1; // Seems to be critical for CH559 implementation.
-
 	// Reset receive buffer.
 	ps2_rx_buf_count = 0;
 	ps2_rx_buf_w = 0;
@@ -477,6 +482,12 @@ void mouse_write_byte_async(uint8_t data) // ps2_write
 	ps2_bitcount = 11;
 	ps2_data = data;
 	ps2_parity = parity(data);
+
+	clear_delayed_int1();
+
+	// Release clock line.
+	// Data sent from the host to the device is read on the rising edge of the clock signal.
+	PS2_MOUSE_CLOCK = 1;
 
 	enable_int1();
 }
@@ -491,8 +502,9 @@ uint8_t mouse_read_byte_sync(void) // ps2_recv
 
 uint8_t mouse_init_state = 0; // ToDo: reset on init restart
 
-// Returns true in byte read from device and matches passed value. 
+// Returns true in byte read from device and matches passed value.
 // Increases mouse_init_state if value matches else set ps2_state to PS2_STATE_ERROR.
+// Intended to be called from mouse_init_protocol.
 bool mouse_read_compare_value_async(uint8_t value)
 {
 	if(ps2_rx_buf_count)
@@ -504,7 +516,7 @@ bool mouse_read_compare_value_async(uint8_t value)
 			return false;
 		}
 
-		mouse_init_state++; // Intended to be called from mouse_init_protocol.
+		mouse_init_state++; // Advance protocol init sequence.
 
 		return true;
 	}
