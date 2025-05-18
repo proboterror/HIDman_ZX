@@ -465,7 +465,7 @@ UINT8 TransferReceive(ENDPOINT *pEndPoint, UINT8 *pData, UINT16 *pRetLen, UINT16
 	UINT8 s;
 	UINT8 len;
 
-	s = USBHostTransact(USB_PID_IN << 4 | (pEndPoint->EndpointAddr & 0x7F), pEndPoint->TOG ? bUH_R_TOG | bUH_T_TOG : 0, timeout); // CH559��������,��ȡ����,NAK������
+	s = USBHostTransact(USB_PID_IN << 4 | (pEndPoint->EndpointAddr & 0x7F), pEndPoint->TOG ? bUH_R_TOG | bUH_T_TOG : 0, timeout); // CH559传输事务,获取数据,NAK不重试
 	if (s == ERR_SUCCESS)
 	{
 		UINT8 i;
