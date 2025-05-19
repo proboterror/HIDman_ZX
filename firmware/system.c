@@ -173,15 +173,15 @@ void GPIOInit(void)
 	P2 = 0b00000111;	 // GOTEK buttons off by default (i.e. high)
 
 	// port3 setup
-	P3_DIR = 0b00000010; // 6 is switch, 2,3,4,5 are PS/2 mouse/keyboard i/o, 1 is UART0 TXD
+	P3_DIR = 0b00000010; // 2,3,4,5 are PS/2 mouse/keyboard i/o, 1 is UART0 TXD
 	PORT_CFG |= bP3_OC;	 // open collector
-	P3_PU = 0b01000010;	 // pullup on 1 for TXD, 6 for switch, PS/2 use external pullups
-	P3 = 0b01111110;	 // default pin states
+	P3_PU = 0b00000010;	 // pullup on 1 for TXD, PS/2 use external pullups
+	P3 = 0xFF;	 		 // default pin states
 
 	// port4 setup
-	P4_DIR = 0b00010100; // 4.0 is RXD, 4.2 is Blue LED, 4.3 is MOUSE DATA (actually input, since we're faking open drain), 4.4 is TXD, 4.6 is SWITCH
+	P4_DIR = 0b00000000; // 4.6 is SWITCH
 	P4_PU = 0b01000000;	 // pullup on switch
-	P4_OUT = 0b00000100; // LEDs off (i.e. HIGH), MOUSE DATA low (since it's switched by toggling input on and off, i.e. faking open drain)
+	P4_OUT = 0b00000000; // 
 }
 
 void ClockInit(void)
