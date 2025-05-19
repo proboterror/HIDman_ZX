@@ -503,6 +503,8 @@ bool gotek_buttons_update(uint8_t make_code, bool state)
 	return CTRL;
 }
 
+extern uint8_t mouse_scale;
+
 void special_keys_update(uint8_t make_code, bool state)
 {
 	static __data bool PAUSE = false;
@@ -520,6 +522,15 @@ void special_keys_update(uint8_t make_code, bool state)
 
 		CH446Q_set(ZX_KEY_PAUSE, PAUSE);
 	}
+
+	if(make_code == PS2_KEY_F1)
+		mouse_scale = 1;
+
+	if(make_code == PS2_KEY_F2)
+		mouse_scale = 2;
+
+	if(make_code == PS2_KEY_F3)
+		mouse_scale = 3;
 }
 
 void zx_keyboard_update()

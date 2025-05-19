@@ -206,10 +206,12 @@ SBIT(MKEY, PADR(MKEY_PORT), MKEY_PIN);
 
 #define _delay_us mDelayuS
 
+uint8_t mouse_scale = 1;
+
 // Kempston mouse interface axis data, increased by reported PS/2 mouse axis coordinate delta.
 // 8-bit values are wrapped and not clamped.
-uint8_t mouse_x = 128;
-uint8_t mouse_y = 96;
+int16_t mouse_x = 128;
+int16_t mouse_y = 96;
 // Value read from PS/2 mouse data packet. Should be inverted for Kempston mouse.
 // Bit 2: middle button, bit 1: right button, bit 0: left button.
 // Unlike PS/2 mouse, Kempston mouse can have 4 buttons.
@@ -773,13 +775,13 @@ void set_controller_registers()
 {
 	// Set MX, MY, MKEY values to controller registers.
 	// Data written to registers on rising_edge.
-	PORT(DI_PORT) = mouse_x;
+	PORT(DI_PORT) = (uint8_t)(mouse_x / mouse_scale);
 	_delay_us(DI_BUS_SET_DELAY);
 	high(MX);
 	_delay_us(REGISTER_SET_DELAY);
 	low(MX);
 
-	PORT(DI_PORT) = mouse_y;
+	PORT(DI_PORT) = (uint8_t)(mouse_y / mouse_scale);
 	_delay_us(DI_BUS_SET_DELAY);
 	high(MY);
 	_delay_us(REGISTER_SET_DELAY);
@@ -797,9 +799,9 @@ void set_controller_registers()
 
 #if DEBUG
 	char buf[5];
-	_uitoa(mouse_x, buf, 10);
+	_itoa(mouse_x, buf, 10);
 	DEBUGOUT("\n%s",buf);
-	_uitoa(mouse_y, buf, 10);
+	_itoa(mouse_y, buf, 10);
 	DEBUGOUT(" %s",buf);
 #if ENABLE_WHEEL
 	_itoa(mouse_z, buf, 10);
