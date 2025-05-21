@@ -96,20 +96,21 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 
 		// bits may be across any byte alignment
 		// so do the neccesary shifting to get it to all fit in a uint32_t
-		int8_t shiftbits = -(currSeg->startBit % 8);
-		uint8_t startbyte = currSeg->startBit / 8;
+		uint16_t currentBit = currSeg->startBit;
 
-        currByte = data + startbyte;
-        
-		while(shiftbits < currSeg->reportSize) {
-        
-			if (shiftbits < 0)
-				value |= ((uint32_t)(*currByte)) >> (uint32_t)(-shiftbits);
-			else
-				value |= ((uint32_t)(*currByte)) << (uint32_t)shiftbits;
-            
-            currByte++;
-			shiftbits += 8;
+		for (uint8_t i = 0; i < currSeg->reportSize; i++)
+		{
+			// Calculate byte position and bit offset within the byte
+			const uint8_t shiftbits = currentBit % 8;
+			const uint8_t startbyte = currentBit / 8;
+
+			// Extract the bit
+			const uint8_t bit = (data[startbyte] >> shiftbits) & 0x01;
+
+			// Add the bit to the result
+			value |= (uint32_t)bit << i;
+
+			currentBit++;
 		}
 
 		// if it's a signed integer we need to extend the sign
@@ -117,7 +118,7 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 		if (currSeg->InputParam & INPUT_PARAM_SIGNED)
 			value = SIGNEX(value, currSeg->reportSize - 1);
 
-		
+
 
 		//old way, not significantly faster anymore
 		//currByte = data + (currSeg->startBit >> 3);
@@ -125,18 +126,18 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 		//				 & bitMasks[currSeg->reportSize];			 // mask off the bits according to seg size
 
 		//printf("x:%lx\n", currSeg->value);
-
+		
 		if (currSeg->OutputChannel == MAP_KEYBOARD)
 			report->keyboardUpdated = 1;
 
 		if (currSeg->InputType == MAP_TYPE_THRESHOLD_ABOVE && value > currSeg->InputParam)
-		{
-			make = 1;
-		}
+			{
+					make = 1;
+			}
 		else if (currSeg->InputType == MAP_TYPE_THRESHOLD_BELOW && value < currSeg->InputParam)
-		{
-			make = 1;
-		}
+			{
+					make = 1;
+			}
 		else if (currSeg->InputType == MAP_TYPE_EQUAL && value == currSeg->InputParam)
 		{
 			make = 1;
