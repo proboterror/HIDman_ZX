@@ -25,23 +25,18 @@ __code uint8_t bitMasks[] = {0x00, 0x01, 0x03, 0x07, 0x0f, 0x1F, 0x3F, 0x7F, 0xF
 void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata uint8_t *data)
 {
 	bool make = 0;
-	uint8_t tmp = 0;
-	uint16_t cnt, endbit;
-	uint8_t *currByte;
-	uint8_t pressed = 0;
 
 	if (currSeg->InputType == MAP_TYPE_BITFIELD)
 	{
 
-		endbit = currSeg->startBit + currSeg->reportCount;
-		tmp = currSeg->OutputControl;
-		for (cnt = currSeg->startBit; cnt < endbit; cnt++)
+		const uint16_t endbit = currSeg->startBit + currSeg->reportCount;
+		uint8_t tmp = currSeg->OutputControl;
+		for (uint16_t cnt = currSeg->startBit; cnt < endbit; cnt++)
 		{
-
-			pressed = 0;
+			uint8_t pressed = 0;
 
 			// find byte
-			currByte = data + ((cnt) >> 3);
+			const uint8_t *currByte = data + ((cnt) >> 3);
 
 			// find bit
 			if (*currByte & (0x01 << (cnt & 0x07)))
@@ -58,7 +53,6 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 				}
 				else
 				{
-					
 					if (GetOldKey(tmp, report)) {
 						report->keyboardUpdated = 1;
 					}
