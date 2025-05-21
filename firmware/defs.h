@@ -178,9 +178,6 @@ typedef struct _HID_LOCAL
 #define MAP_TYPE_EQUAL 6
 
 #define INPUT_PARAM_SIGNED 1
-#define INPUT_PARAM_SIGNED_SCALEDOWN 2
-
-#define JOYPRESETCOUNT 18
 
 typedef struct JoyPreset
 {
@@ -194,7 +191,6 @@ typedef struct JoyPreset
 	uint8_t OutputChannel;
 
 	// for keyboard, this is the HID scancode of the key associated with this control
-	// for mouse, this is one of the values of MAP_MOUSE_x
 	uint8_t OutputControl;
 
 	// How this control gets interpreted - MAP_TYPE_x

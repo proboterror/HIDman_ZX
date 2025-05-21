@@ -52,12 +52,5 @@ void InitPresets(void) {
     // Load the base presets
     LoadPreset(DefaultJoyMaps);
 
-    // Some buttons get mapped differently depending on if
-    // game controllers are set to emulate mice
-    if (HMSettings.GameControllerAsMouse)
-        LoadPreset(ConfigGameMouse);
-    else
-        LoadPreset(ConfigGameNoMouse);
-
     //DumpPresets();
 }

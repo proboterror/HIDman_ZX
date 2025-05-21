@@ -10,9 +10,6 @@ typedef struct Settings {
     // Set all USB mice to run in Report Mode rather than Boot Mode
     bool MouseReportMode;
 
-    // Use game controller to control mouse
-    bool GameControllerAsMouse;
-
     // Output debug info to serial port
     bool SerialDebugOutput;
 

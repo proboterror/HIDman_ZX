@@ -29,7 +29,6 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 	uint16_t cnt, endbit;
 	uint8_t *currByte;
 	uint8_t pressed = 0;
-	int16_t tmpl;
 
 	if (currSeg->InputType == MAP_TYPE_BITFIELD)
 	{
@@ -142,34 +141,12 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 		{
 			make = 1;
 		}
-
 		else
 		{
 			make = 0;
 		}
-		// hack for mouse, as it needs to explicity switch on and off
-		// this needs rewritten
-		if (currSeg->OutputChannel == MAP_MOUSE && currSeg->InputType == MAP_TYPE_THRESHOLD_ABOVE) {
-			switch (currSeg->OutputControl)
-				{
-				case MAP_MOUSE_BUTTON1:
-					MouseSet(0, value);
-					break;
-				case MAP_MOUSE_BUTTON2:
-					MouseSet(1, value);
-					break;
-				case MAP_MOUSE_BUTTON3:
-					MouseSet(2, value);
-					break;
-				case MAP_MOUSE_BUTTON4:
-					MouseSet(3, value);
-					break;
-				case MAP_MOUSE_BUTTON5:
-					MouseSet(4, value);
-					break;
-				}
-		}
-		else if (make)
+		
+		if (make)
 		{
 			if (currSeg->OutputChannel == MAP_KEYBOARD)
 			{
@@ -180,48 +157,17 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 		{
 			if (currSeg->OutputChannel == MAP_MOUSE)
 			{
-
-				#define DEADZONE 1
-
 				switch (currSeg->OutputControl)
 				{
 				// TODO scaling
 				case MAP_MOUSE_X:
-					if (currSeg->InputParam == INPUT_PARAM_SIGNED_SCALEDOWN){
-
-						tmpl = ((int8_t)((value + 8) >> 4) - 0x08);
-
-						// deadzone
-						if (tmpl <= -DEADZONE) tmpl+= DEADZONE;
-						else if (tmpl >= DEADZONE) tmpl-= DEADZONE;
-						else tmpl = 0;
-						
-						MouseMove(tmpl, 0, 0);
-					}
-					else
-						MouseMove((int32_t)value, 0, 0);
-
+					MouseMove((int32_t)value, 0, 0);
 					break;
 				case MAP_MOUSE_Y:
-					if (currSeg->InputParam == INPUT_PARAM_SIGNED_SCALEDOWN) {
-
-						tmpl = ((int8_t)((currSeg->value + 8) >> 4) - 0x08);
-
-						// deadzone
-						if (tmpl <= -DEADZONE) tmpl+= DEADZONE;
-						else if (tmpl >= DEADZONE) tmpl-= DEADZONE;
-						else tmpl = 0;
-
-						MouseMove(0, tmpl, 0);
-					}
-					else
-						MouseMove(0, (int32_t)value, 0);
-
+					MouseMove(0, (int32_t)value, 0);
 					break;
 				case MAP_MOUSE_WHEEL:
-
 					MouseMove(0, 0, (int32_t)value);
-
 					break;
 				}
 			}

@@ -6,7 +6,6 @@ void InitSettings()
 {
     HMSettings.KeyboardReportMode = false;
     HMSettings.MouseReportMode = true;
-    HMSettings.GameControllerAsMouse = false;
 #ifdef DEBUG
     HMSettings.SerialDebugOutput = true;
 #else
