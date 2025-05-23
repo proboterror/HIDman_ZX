@@ -159,6 +159,16 @@ typedef struct _HID_LOCAL
 
 #define MAP_KEYBOARD 0
 #define MAP_MOUSE 1
+#define MAP_KEMPSTON 2
+
+#define MAP_KEMPSTON_R 0
+#define MAP_KEMPSTON_L 1
+#define MAP_KEMPSTON_D 2
+#define MAP_KEMPSTON_U 3
+#define MAP_KEMPSTON_BUTTON1 4
+#define MAP_KEMPSTON_BUTTON2 5
+#define MAP_KEMPSTON_BUTTON3 6
+#define MAP_KEMPSTON_BUTTON4 7
 
 #define MAP_MOUSE_BUTTON1 1
 #define MAP_MOUSE_BUTTON2 2
@@ -177,20 +187,21 @@ typedef struct _HID_LOCAL
 #define MAP_TYPE_BITFIELD 5
 #define MAP_TYPE_EQUAL 6
 
-#define INPUT_PARAM_SIGNED 1
-
 typedef struct JoyPreset
 {
+	// Input HID joystick or gamepad index.
+	// Note: USB HID report descriptor can describe more than 1 Report ID.
 	uint8_t Number;
 
 	uint8_t InputUsagePage;
 
 	uint32_t InputUsage;
 
-	// Mouse or keyboard
+	// Mouse or keyboard or Kempston joystick
 	uint8_t OutputChannel;
 
 	// for keyboard, this is the HID scancode of the key associated with this control
+	// for Kempston joystick, port value bit index MAP_KEMPSTON_x
 	uint8_t OutputControl;
 
 	// How this control gets interpreted - MAP_TYPE_x
@@ -210,7 +221,7 @@ typedef struct HID_SEG
 
 	uint16_t startBit;
 
-	// Mouse or keyboard
+	// Mouse or keyboard or Kempston joystick
 	uint8_t OutputChannel;
 
 	// for keyboard, this is the HID scancode of the key associated with this control
@@ -222,6 +233,11 @@ typedef struct HID_SEG
 
 	// Param has different meanings depending on InputType
 	uint16_t InputParam;
+
+	// Assume HID item size does not exceed 16 bit for X/Y axes to save memory and CPU cycles.
+	// However, by specification it can be 32 bit.
+	int16_t logicalMinimum;
+	uint16_t logicalMaximum;
 
 	uint8_t reportSize;
 
@@ -241,6 +257,9 @@ typedef struct _HID_REPORT
 	uint16_t length;
 
 	bool keyboardUpdated;
+	bool joystickUpdated;
+
+	uint8_t joystickState;
 
 	// bit map for currently pressed keys (0-256)
 	uint8_t KeyboardKeyMap[32];

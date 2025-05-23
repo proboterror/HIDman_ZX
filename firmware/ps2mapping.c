@@ -35,9 +35,13 @@ void CreateSeg(INTERFACE *pInterface)
 	tempSB += HIDParseState.hidGlobal.reportSize;                                                      
 	currSegPnt->reportSize = HIDParseState.hidGlobal.reportSize; 
 
-	if (HIDParseState.hidGlobal.logicalMinimum < 0) {
-		currSegPnt->InputParam |= INPUT_PARAM_SIGNED;
-	}                                      
+	if (currSegPnt->reportSize > 16)
+	{
+		DEBUGOUT("\nWarning: CreateMapping: 32-bit HID value");
+	}
+
+	currSegPnt->logicalMinimum = (int16_t)HIDParseState.hidGlobal.logicalMinimum;
+	currSegPnt->logicalMaximum = (uint16_t)HIDParseState.hidGlobal.logicalMaximum;
 }
 
 //search though preset to see if this matches a mapping
@@ -58,7 +62,7 @@ void CreateMapping(INTERFACE *pInterface)
 			currSegPnt->OutputControl = currPreset->OutputControl;   
 			currSegPnt->InputType = currPreset->InputType;           
 			currSegPnt->InputParam = currPreset->InputParam;    
-     
+
 		}                                                                 
 		currPreset = currPreset->next; 										
 	}                         

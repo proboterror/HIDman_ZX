@@ -51,6 +51,7 @@ void DumpPresets(void){
 void InitPresets(void) {
     // Load the base presets
     LoadPreset(DefaultJoyMaps);
+    LoadPreset(KempstonJoyMaps);
 
     //DumpPresets();
 }

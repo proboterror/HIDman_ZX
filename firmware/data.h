@@ -7,6 +7,7 @@
 #include "defs.h"
 
 extern __code JoyPreset DefaultJoyMaps[];
+extern __code JoyPreset KempstonJoyMaps[];
 
 extern __xdata uint8_t StandardKeyboardDescriptor[];
 extern __xdata uint8_t StandardMouseDescriptor[];

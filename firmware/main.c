@@ -12,6 +12,7 @@
 #include "system.h"
 #include "ps2_keyboard.h"
 #include "ps2_mouse.h"
+#include "kempston_joy.h"
 #include "zx_keyboard.h"
 
 
@@ -106,6 +107,7 @@ int main(void)
 
 	ps2_keyboard_init();
 	ps2_mouse_init_registers();
+	kempston_joy_init();
 	zx_keyboard_init();
 
 	// timer0 setup
@@ -140,6 +142,7 @@ int main(void)
 		ProcessUsbHostPort();
 		HandleMouse();
 		
+		kempston_joy_update();
 		ps2_mouse_update();
 		zx_keyboard_update();
 	}

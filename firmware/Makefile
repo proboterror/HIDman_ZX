@@ -31,7 +31,8 @@ $(OBJDIR)/CH446Q.rel \
 $(OBJDIR)/ps2_keyboard.rel \
 $(OBJDIR)/ps2_mouse.rel \
 $(OBJDIR)/zx_keyboard.rel \
-$(OBJDIR)/gotek_buttons.rel
+$(OBJDIR)/gotek_buttons.rel \
+$(OBJDIR)/kempston_joy.rel
 
 COMMON += $(OBJDIR)/uart.rel
 COMMON += $(OBJDIR)/uart1.rel

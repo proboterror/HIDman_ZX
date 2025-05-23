@@ -14,6 +14,211 @@
 #include "data.h"
 #include "scancode.h"
 
+__code JoyPreset KempstonJoyMaps[] = {
+    // Buttons
+    {
+        1,                        // Number
+        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
+        1,                        // Input Usage
+        MAP_KEMPSTON,             // Output Channel
+        MAP_KEMPSTON_BUTTON1,     // Output Control
+        MAP_TYPE_THRESHOLD_ABOVE, // InputType
+        0                         // Input Param
+    },
+    {
+        1,                        // Number
+        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
+        2,                        // Input Usage
+        MAP_KEMPSTON,             // Output Channel
+        MAP_KEMPSTON_BUTTON2,     // Output Control
+        MAP_TYPE_THRESHOLD_ABOVE, // InputType
+        0                         // Input Param
+    },
+    {
+        1,                        // Number
+        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
+        3,                        // Input Usage
+        MAP_KEMPSTON,             // Output Channel
+        MAP_KEMPSTON_BUTTON3,     // Output Control
+        MAP_TYPE_THRESHOLD_ABOVE, // InputType
+        0                         // Input Param
+    },
+    {
+        1,                        // Number
+        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
+        4,                        // Input Usage
+        MAP_KEMPSTON,             // Output Channel
+        MAP_KEMPSTON_BUTTON4,     // Output Control
+        MAP_TYPE_THRESHOLD_ABOVE, // InputType
+        0                         // Input Param
+    },
+
+    // D-Pad / Left Analog
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_X,            // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_R,            // Output Control
+        MAP_TYPE_THRESHOLD_ABOVE,  // InputType
+        192                        // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_X,            // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_L,            // Output Control
+        MAP_TYPE_THRESHOLD_BELOW,  // InputType
+        64                         // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_Y,            // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_D,            // Output Control
+        MAP_TYPE_THRESHOLD_ABOVE,  // InputType
+        192                        // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_Y,            // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_U,            // Output Control
+        MAP_TYPE_THRESHOLD_BELOW,  // InputType
+        64                         // Input Param
+    },
+    // POV/HAT switch
+    // 0 on hat switch, just press up
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_U,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        0                          // Input Param
+    },
+    // 1 on hatswitch, press up and right
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_U,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        1                          // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_R,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        1                          // Input Param
+    },
+    // 2 on hatswitch, press right
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_R,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        2                          // Input Param
+    },
+    // 3 on hat, press right and down
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_R,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        3                          // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_D,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        3                          // Input Param
+    },
+    // 4 on hat, press down
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_D,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        4                          // Input Param
+    },
+    // 5 on hat, press down and left
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_D,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        5                          // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_L,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        5                          // Input Param
+    },
+    // 6 on hat, press left
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_L,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        6                          // Input Param
+    },
+    // 7 on hat, press left and up
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_L,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        7                          // Input Param
+    },
+    {
+        1,                         // Number
+        REPORT_USAGE_PAGE_GENERIC, // Usage Page
+        REPORT_USAGE_HATSWITCH,    // Usage
+        MAP_KEMPSTON,              // Output Channel
+        MAP_KEMPSTON_U,            // Output Control
+        MAP_TYPE_EQUAL,            // InputType
+        7                          // Input Param
+    },  
+    // null to signify end
+    {
+        0, // Number
+        0, // Input Usage Page
+        0, // Input Usage
+        0, // Output Channel
+        0, // Output Control
+        0, // InputType
+        0  // Input Param
+    }
+};
+
 __code JoyPreset DefaultJoyMaps[] = {
 
     {

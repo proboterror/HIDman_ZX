@@ -15,20 +15,18 @@
 #include "system.h"
 #include "scancode.h"
 #include "ps2_keyboard.h"
+#include "kempston_joy.h"
 
 #define SetKey(key,report) (report->KeyboardKeyMap[key >> 3] |= 1 << (key & 0x07))
 
 #define GetOldKey(key,report) (report->oldKeyboardKeyMap[key >> 3] & (1 << (key & 0x07)))
 
-__code uint8_t bitMasks[] = {0x00, 0x01, 0x03, 0x07, 0x0f, 0x1F, 0x3F, 0x7F, 0xFF};
+#define map_to_uint8(value, min, max) (uint8_t)((((value - min) * 255) + ((max - min) >> 1)) / (max - min))
 
 void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata uint8_t *data)
 {
-	bool make = 0;
-
 	if (currSeg->InputType == MAP_TYPE_BITFIELD)
 	{
-
 		const uint16_t endbit = currSeg->startBit + currSeg->reportCount;
 		uint8_t tmp = currSeg->OutputControl;
 		for (uint16_t cnt = currSeg->startBit; cnt < endbit; cnt++)
@@ -58,7 +56,7 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 					}
 				}
 			}
-			else
+			else if (currSeg->OutputChannel == MAP_MOUSE)
 			{
 				switch (tmp)
 				{
@@ -96,48 +94,85 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 			// Calculate byte position and bit offset within the byte
 			const uint8_t shiftbits = currentBit % 8;
 			const uint8_t startbyte = currentBit / 8;
-
+	
 			// Extract the bit
 			const uint8_t bit = (data[startbyte] >> shiftbits) & 0x01;
-
+	
 			// Add the bit to the result
 			value |= (uint32_t)bit << i;
-
+	
 			currentBit++;
 		}
 
+		const bool sign = currSeg->logicalMinimum < 0;
 		// if it's a signed integer we need to extend the sign
-		// todo, actually determine if it is a signed int... look at logical max/min fields in descriptor
-		if (currSeg->InputParam & INPUT_PARAM_SIGNED)
+		if (sign)
+		{
 			value = SIGNEX(value, currSeg->reportSize - 1);
+		}
 
-
-
-		//old way, not significantly faster anymore
-		//currByte = data + (currSeg->startBit >> 3);
-		//currSeg->value = ((*currByte) >> (currSeg->startBit & 0x07)) // shift bits so lsb of this seg is at bit zero
-		//				 & bitMasks[currSeg->reportSize];			 // mask off the bits according to seg size
-
-		//printf("x:%lx\n", currSeg->value);
-		
 		if (currSeg->OutputChannel == MAP_KEYBOARD)
 			report->keyboardUpdated = 1;
 
-		if (currSeg->InputType == MAP_TYPE_THRESHOLD_ABOVE && value > currSeg->InputParam)
-			{
-					make = 1;
-			}
-		else if (currSeg->InputType == MAP_TYPE_THRESHOLD_BELOW && value < currSeg->InputParam)
-			{
-					make = 1;
-			}
-		else if (currSeg->InputType == MAP_TYPE_EQUAL && value == currSeg->InputParam)
+		if (currSeg->OutputChannel == MAP_KEMPSTON)
+			report->joystickUpdated = 1;
+
+		bool make = 0;
+
+		// Received HID value should be re-interpreted depending on Logical Minimum / Logical Maximum and Report Size in USB HID report descriptor.
+		// Example:
+		// Minimum 0xFF (-1), Maximum 0x01 (1), Report Size 0x08: value is signed int8_t in -1..1 range.
+		// Minimum 0x81 (-127), Maximum 0x7F (127), Report Size 0x08: value is signed int8_t in -127..127 range.
+		// Minimum 0x00 (0), Maximum 0xFF (255), Report Size 0x08: value is signed uint8_t in 0..255 range.
+
+		// Note: Logical Minimum/Maximum can describe 16/32-bit ranges but require extended encoding
+		// (0x81 for 16-bit, 0x82 for 32-bit), can be checked with Report Size.
+
+		// Note: InputParam field in JoyPreset user presets is written assuming REPORT_USAGE_X / Y / Z / Rz
+		// are unsigned 8-bit values in 0..255 range.
+		// In practice they can be signed in -1..1 range for example, or 0..12000 / 0..65535 / -32768..32767 range with 16-bit ReportSize, or even 32-bit.
+		
+		// Map received value to 0..255 range depending on Logical Minimum / Logical Maximum.
+		// ToDo: only map values with currSeg->InputUsage == REPORT_USAGE_X/Y
+		if (currSeg->InputType == MAP_TYPE_THRESHOLD_ABOVE)
 		{
-			make = 1;
+			if(sign)
+			{
+				const uint8_t mapped_value = map_to_uint8((int32_t)value, currSeg->logicalMinimum, currSeg->logicalMaximum);
+
+				if (mapped_value > currSeg->InputParam)
+					make = 1;
+			}
+			else
+			{
+
+				const uint8_t mapped_value = map_to_uint8(value, currSeg->logicalMinimum, currSeg->logicalMaximum);
+
+				if (mapped_value > currSeg->InputParam)
+					make = 1;
+			}
 		}
-		else
+		else if (currSeg->InputType == MAP_TYPE_THRESHOLD_BELOW)
 		{
-			make = 0;
+			if(sign)
+			{
+				const uint8_t mapped_value = map_to_uint8((int32_t)value, currSeg->logicalMinimum, currSeg->logicalMaximum);
+
+				if (mapped_value < currSeg->InputParam)
+					make = 1;
+			}
+			else
+			{
+				const uint8_t mapped_value = map_to_uint8(value, currSeg->logicalMinimum, currSeg->logicalMaximum);
+
+				if (mapped_value < currSeg->InputParam)
+					make = 1;
+			}
+		}
+		else if (currSeg->InputType == MAP_TYPE_EQUAL)
+		{
+			if (value == currSeg->InputParam)
+				make = 1;
 		}
 		
 		if (make)
@@ -145,6 +180,11 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 			if (currSeg->OutputChannel == MAP_KEYBOARD)
 			{
 				SetKey(currSeg->OutputControl, report);
+			}
+
+			if (currSeg->OutputChannel == MAP_KEMPSTON)
+			{
+				report->joystickState |= (1 << currSeg->OutputControl);
 			}
 		}
 		else if (currSeg->InputType == MAP_TYPE_SCALE)
@@ -155,10 +195,10 @@ void processSeg(__xdata HID_SEG *currSeg, __xdata HID_REPORT *report, __xdata ui
 				{
 				// TODO scaling
 				case MAP_MOUSE_X:
-					MouseMove((int32_t)value, 0, 0);
+						MouseMove((int32_t)value, 0, 0);
 					break;
 				case MAP_MOUSE_Y:
-					MouseMove(0, (int32_t)value, 0);
+						MouseMove(0, (int32_t)value, 0);
 					break;
 				case MAP_MOUSE_WHEEL:
 					MouseMove(0, 0, (int32_t)value);
@@ -183,7 +223,7 @@ bool BitPresent(uint8_t *bitmap, uint8_t bit)
 	else
 		return 0;
 }
- 
+
 bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *report)
 {
 	__xdata HID_REPORT *descReport;
@@ -215,11 +255,18 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 
 	// clear key map as all pressed keys should be present in report
 	memset(descReport->KeyboardKeyMap, 0, 32);
+	// Kempston joystick state bits will be set if Kempston joystick mappings assigned to current report triggered.
+	descReport->joystickState = 0;
 
 	while (currSegNode != NULL)
 	{
 		processSeg((__xdata HID_SEG *)(currSegNode->data), descReport, report);
 		currSegNode = currSegNode->next;
+	}
+
+	if(descReport->joystickUpdated)
+	{
+		kempston_joy_set(descReport->joystickState);
 	}
 
 	if(descReport->keyboardUpdated)
@@ -269,6 +316,7 @@ bool ParseReport(__xdata INTERFACE *interface, uint32_t len, __xdata uint8_t *re
 		}
 		memcpy(descReport->oldKeyboardKeyMap, descReport->KeyboardKeyMap, 32);
 		descReport->keyboardUpdated = 0;
+		descReport->joystickUpdated = 0;
 	}
 
 	return 1;
