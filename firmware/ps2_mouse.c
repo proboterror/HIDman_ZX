@@ -815,7 +815,8 @@ void set_controller_registers()
 		setLED(false); // Turn off LED for a while
 }
 
-volatile bool timer_timeout = false;
+extern volatile uint32_t __data time_ms_32;
+uint32_t time_start;
 
 bool ps2_port_inited = false;
 bool mouse_inited = false;
@@ -825,6 +826,7 @@ void ps2_mouse_update()
 	if(ps2_port_inited == false)
 	{
 		DEBUGOUT("\nMouse Init...");
+		time_start = time_ms_32;
 		ps2_init_port(); 
 		ps2_port_inited = true;
 	}
@@ -855,11 +857,10 @@ void ps2_mouse_update()
 			// Logitech M-SBF96 (P/N 852209-A000): requires 1s delay after power on before init.
 
 			// if mouse protocol init timeout timer elapsed, restart init
-			if(timer_timeout) // timer set to 2s
+			if((time_ms_32 - time_start) > 2000 ) // timer set to 2s
 			{
 				DEBUGOUT("\nTimer timeout");
 				ps2_state = PS2_STATE_ERROR;
-				timer_timeout = false;
 			}
 		}
 	}

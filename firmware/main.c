@@ -17,10 +17,7 @@
 
 
 uint8_t UsbUpdateCounter = 0;
-// PS/2 mouse init timeout counter (2s).
-uint16_t counter = 0;
-
-extern volatile bool timer_timeout;
+volatile uint32_t __data time_ms_32 = 0;
 
 void EveryMillisecond(void) {
 
@@ -51,11 +48,7 @@ void EveryMillisecond(void) {
 		setLED(true);
 	}
 
-	if (++counter == 2000) // Timer 1 period set to 1 ms, init timeout 2s.
-	{
-		timer_timeout = true;
-		counter = 0;
-	}
+	time_ms_32++;
 }
 
 

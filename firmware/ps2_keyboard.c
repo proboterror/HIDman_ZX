@@ -103,6 +103,8 @@ uint8_t ps2_get_raw_code(uint8_t *code_0, uint8_t *code_1, uint8_t *code_2)
 	return len;
 }
 
+extern volatile uint32_t __data time_ms_32;
+
 // See also PS2KeyRaw library: Arduino PS2 keyboard interface by Paul Carpenter
 // https://github.com/techpaul/PS2KeyRaw
 void ext0_interrupt(void) __interrupt(INT_NO_INT0)
@@ -110,20 +112,18 @@ void ext0_interrupt(void) __interrupt(INT_NO_INT0)
 	static __data uint8_t bitcount = 0;
 	static __data uint8_t incoming = 0;
 	static __data uint8_t parity;
-	//static uint32_t prev_ms = 0;
+	static __data uint32_t prev_ms = 0;
 
 	const uint8_t val = PS2_KEY_DATA;
-/*
-	// Note: This value wraps roughly every 1 hour 11 minutes and 35 seconds.
-	const uint32_t now_ms = time_us_32(); // Warning: originally time in ms (milliseconds), not us (microseconds); time_us_64 assigned to uint32_t does not make sense.
-	if (now_ms - prev_ms > 250000) // 250 ms bit receive timeout.
+
+	if (time_ms_32 - prev_ms > 250) // 250 ms bit receive timeout.
 	{
 		bitcount = 0;
 		incoming = 0;
 	}
 
-	//prev_ms = now_ms;
-*/
+	prev_ms = time_ms_32;
+
 	bitcount++;
 
 	switch( bitcount )
