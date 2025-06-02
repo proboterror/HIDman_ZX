@@ -16,6 +16,9 @@
 #include "usbll.h"
 #include "preset.h"
 
+#include "custom_handlers.h"
+#include "kempston_joy.h"
+
 #define RECEIVE_BUFFER_LEN 512
 UINT8X ReceiveDataBuffer[RECEIVE_BUFFER_LEN];
 
@@ -325,6 +328,23 @@ UINT8 HIDDataTransferReceive(USB_HUB_PORT *pUsbDevice)
 
 	static UINT16 len;
 
+	custom_handler_t* hahdler = (custom_handler_t*)pUsbDevice->UserData;
+	
+	if (hahdler)
+	{
+		uint8_t gamepad_state = 0;
+
+		if (hahdler->poll(pUsbDevice, &gamepad_state))
+		{
+			kempston_joy_set(gamepad_state);
+
+			if(gamepad_state)
+				setLED(false);
+		}
+
+		return ERR_SUCCESS;
+	}
+
 	s = 0;
 	interfaceNum = pUsbDevice->InterfaceNum;
 	for (i = 0; i < interfaceNum; i++)
@@ -441,6 +461,16 @@ BOOL EnumerateHubPort(__xdata USB_HUB_PORT *pUsbHubPort, UINT8 addr)
 
 	DEBUGOUT("Config Descriptor :\n")
 	DumpHex(ReceiveDataBuffer, len);
+
+	custom_handler_t* handler = match(pUsbDevice->VendorID, pUsbDevice->ProductID);
+
+	if (handler)
+	{
+		pUsbHubPort->UserData = (void*)handler;
+		handler->init(pUsbDevice, (USB_CFG_DESCR *)ReceiveDataBuffer, len);
+
+		return true;
+	}
 
 	//parse config descriptor
 	ParseConfigDescriptor((USB_CFG_DESCR *)ReceiveDataBuffer, len, pUsbDevice);

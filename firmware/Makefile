@@ -32,7 +32,11 @@ $(OBJDIR)/ps2_keyboard.rel \
 $(OBJDIR)/ps2_mouse.rel \
 $(OBJDIR)/zx_keyboard.rel \
 $(OBJDIR)/gotek_buttons.rel \
-$(OBJDIR)/kempston_joy.rel
+$(OBJDIR)/kempston_joy.rel \
+$(OBJDIR)/custom_handlers.rel \
+$(OBJDIR)/ps3.rel \
+$(OBJDIR)/xbox360_usb.rel \
+$(OBJDIR)/xbox_one.rel
 
 COMMON += $(OBJDIR)/uart.rel
 COMMON += $(OBJDIR)/uart1.rel

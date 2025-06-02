@@ -181,7 +181,7 @@ typedef struct _USB_HUB_PORT
 	UINT8       DeviceSpeed;
 	UINT8       InterfaceNum;
 	__xdata LinkedList*  Interfaces;
-	
+	__xdata void* UserData;
 } USB_HUB_PORT, *USB_PHUB_PORT;
 
 #define  LOW_SPEED      0
@@ -197,6 +197,10 @@ extern INTERFACE* AllocInterface(UINT8 count);
 void ReenumerateAllPorts(void);
 
 void ProcessUsbHostPort(void);
+
+#include "usbdef.h"
+void FillSetupReq(USB_SETUP_REQ *pSetupReq, UINT8 type, UINT8 req, UINT16 value, UINT16 index, UINT16 length);
+UINT8 SetUsbConfig(USB_HUB_PORT *pUsbDevice, UINT8 cfg);
 
 extern __xdata  BOOL volatile s_CheckUsbPort0;
 extern __xdata  BOOL volatile s_CheckUsbPort1;

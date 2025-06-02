@@ -120,6 +120,7 @@ void InitHubPortData(USB_HUB_PORT *pUsbHubPort)
 	pUsbHubPort->DeviceSpeed = FULL_SPEED;
 	pUsbHubPort->InterfaceNum = 0;
 	pUsbHubPort->Interfaces = NULL;
+	pUsbHubPort->UserData = NULL;
 
 	pUsbHubPort->HubPortNum = 0;
 }
@@ -485,4 +486,30 @@ UINT8 TransferReceive(ENDPOINT *pEndPoint, UINT8 *pData, UINT16 *pRetLen, UINT16
 	}
 
 	return (s);
+}
+
+UINT8 TransferSend(ENDPOINT *pEndPoint, UINT8 *pData, UINT16 len, UINT16 timeout)
+{
+	while (len)
+	{
+		mDelayuS(200);
+		UH_TX_LEN = len >= pEndPoint->MaxPacketSize ? pEndPoint->MaxPacketSize : len;
+
+		for (UINT8 i = 0; i != UH_TX_LEN; i++)
+		{
+			TxBuffer[i] = *pData;
+			pData++;
+		}
+
+		UINT8 result = USBHostTransact(USB_PID_OUT << 4 | (pEndPoint->EndpointAddr & 0x7F), UH_TX_CTRL, timeout);
+
+		if (result != ERR_SUCCESS)
+		{
+			return result;
+		}
+
+		len -= UH_TX_LEN;
+	}
+
+	return ERR_SUCCESS;
 }
