@@ -271,7 +271,7 @@ UINT8 GetBootProtocol(USB_HUB_PORT *pUsbDevice, UINT8 interface)
 
 	FillSetupReq(&SetupReq, 0b10100001, HID_GET_PROTOCOL, 0, interface, 1);
 
-	s = HostCtrlTransfer(&SetupReq, pUsbDevice->MaxPacketSize0, &ret, (PUINT16)1);
+	s = HostCtrlTransfer(&SetupReq, pUsbDevice->MaxPacketSize0, &ret, NULL);
 
 	return ret;
 }
