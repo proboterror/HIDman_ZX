@@ -9520,7 +9520,7 @@
 	)
 	(polyline
 		(pts
-			(xy 123.19 50.8) (xy 123.19 76.2)
+			(xy 123.19 50.8) (xy 123.19 77.47)
 		)
 		(stroke
 			(width 0)
@@ -9780,7 +9780,7 @@
 	)
 	(polyline
 		(pts
-			(xy 109.22 109.22) (xy 109.22 76.2)
+			(xy 109.22 109.22) (xy 109.22 77.47)
 		)
 		(stroke
 			(width 0)
@@ -10890,7 +10890,7 @@
 	)
 	(polyline
 		(pts
-			(xy 109.22 76.2) (xy 123.19 76.2)
+			(xy 109.22 77.47) (xy 123.19 77.47)
 		)
 		(stroke
 			(width 0)
@@ -11636,6 +11636,16 @@
 		)
 		(uuid "151ff38c-31db-4ac0-939c-f76a7bf7bca3")
 	)
+	(text "External clock Y1, C2, C3 can be omitted\n(CH559L on-chip 12 MHz clock enabled in firmware)"
+		(exclude_from_sim no)
+		(at 96.774 74.93 0)
+		(effects
+			(font
+				(size 1.143 1.143)
+			)
+		)
+		(uuid "1d1b57f6-4e12-4e39-bfa1-b03ddf6848e2")
+	)
 	(text "USB Interface"
 		(exclude_from_sim no)
 		(at 203.2 116.078 0)
@@ -11675,6 +11685,16 @@
 			)
 		)
 		(uuid "7a6baf5f-360c-4ba5-9c64-f4b7612515c2")
+	)
+	(text "RESET C6, R2 can be omitted\n(CH559L internal power-on RESET used)"
+		(exclude_from_sim no)
+		(at 94.996 48.514 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "8861c1b1-f944-41cf-9ce8-c52a2be7d306")
 	)
 	(text "CPLD JTAG Interface"
 		(exclude_from_sim no)
@@ -11726,7 +11746,7 @@
 		)
 		(uuid "ec039410-839c-49af-b0ed-a2501a8cc14f")
 	)
-	(text "To PS/2 / USB power\n1812L050PR, 0.5A, 15V"
+	(text "To PS/2 / USB power\n0.75A, 6V"
 		(exclude_from_sim no)
 		(at 90.17 99.568 0)
 		(effects
@@ -14502,7 +14522,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Polyfuse"
+		(property "Value" "MF-NSMF075-2"
 			(at 92.71 90.1699 0)
 			(effects
 				(font
@@ -14511,7 +14531,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Fuse:Fuse_1812_4532Metric_Pad1.30x3.40mm_HandSolder"
+		(property "Footprint" "Fuse:Fuse_1206_3216Metric_Pad1.42x1.75mm_HandSolder"
 			(at 91.44 93.98 0)
 			(effects
 				(font
