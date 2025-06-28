@@ -5375,16 +5375,6 @@
 	)
 	(wire
 		(pts
-			(xy 127 46.99) (xy 134.62 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2fd9bdca-cc20-4951-9948-b137560c3772")
-	)
-	(wire
-		(pts
 			(xy 148.59 67.31) (xy 156.21 67.31)
 		)
 		(stroke
@@ -6862,17 +6852,6 @@
 		)
 		(uuid "464dfe82-b407-451f-acc0-a4f3defb2f27")
 	)
-	(label "P3_6"
-		(at 129.54 46.99 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "465a2458-c24a-4276-90f6-6af591a07cb2")
-	)
 	(label "SELECT"
 		(at 101.6 80.01 0)
 		(fields_autoplaced yes)
@@ -6916,6 +6895,17 @@
 			(justify left bottom)
 		)
 		(uuid "4c07c509-cf59-4360-9ef6-cf010c8cf17b")
+	)
+	(label "P3_6"
+		(at 78.74 168.91 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4c8480df-2090-4b18-a942-dc8a1996de10")
 	)
 	(label "P4_5"
 		(at 66.04 34.29 0)
@@ -8596,74 +8586,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_DIP_x01")
-		(at 142.24 46.99 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "285122d5-5a2e-4b54-b4c1-dd07f3820f23")
-		(property "Reference" "SW3"
-			(at 142.24 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "BOOT1"
-			(at 142.24 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
-			(at 142.24 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 142.24 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "1x DIP Switch, Single Pole Single Throw (SPST) switch, small symbol"
-			(at 142.24 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "f9a47812-ad59-4151-8a0c-ba26f87e19c7")
-		)
-		(pin "1"
-			(uuid "c524d426-f697-4070-9759-7710aa9c4867")
-		)
-		(instances
-			(project "zx"
-				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
-					(reference "SW3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 140.97 99.06 90)
 		(unit 1)
@@ -9242,16 +9164,15 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 138.43 21.59 0)
+		(at 138.43 21.59 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "35f20a0b-bc57-4e72-856f-af1f059f9920")
 		(property "Reference" "D1"
-			(at 136.8425 15.24 0)
+			(at 138.43 15.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9259,7 +9180,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 136.8425 17.78 0)
+			(at 138.43 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11593,6 +11514,71 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector_Generic:Conn_01x01")
+		(at 73.66 168.91 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "905e8926-994a-4cc3-a409-254f80026e39")
+		(property "Reference" "J31"
+			(at 69.596 168.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x01"
+			(at 73.66 165.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "THT_Pin:THT_Pin_Vertical"
+			(at 73.66 168.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 73.66 168.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 73.66 168.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1653d9d5-6775-426f-b16a-cd40f6f8c469")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "J31")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "CH559L:CH559L")
 		(at 66.04 30.48 0)
 		(mirror y)
@@ -12209,73 +12195,6 @@
 			(project "zx"
 				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
 					(reference "J6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 149.86 46.99 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "9887ddca-d074-46ba-a970-5370e1042a10")
-		(property "Reference" "#PWR033"
-			(at 156.21 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 153.67 46.9899 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 149.86 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 149.86 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 149.86 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "6e18de59-b6a7-49fe-81af-5f243a3591bf")
-		)
-		(instances
-			(project "zx"
-				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
-					(reference "#PWR033")
 					(unit 1)
 				)
 			)
