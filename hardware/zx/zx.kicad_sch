@@ -6055,7 +6055,7 @@
 	)
 	(wire
 		(pts
-			(xy 240.03 57.15) (xy 247.65 57.15)
+			(xy 234.95 57.15) (xy 247.65 57.15)
 		)
 		(stroke
 			(width 0)
@@ -8586,6 +8586,75 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 231.14 57.15 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "288022a0-1a1d-4d54-9d95-25d73c2abddf")
+		(property "Reference" "R6"
+			(at 229.87 54.864 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10K"
+			(at 229.108 59.436 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder"
+			(at 231.14 55.372 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 231.14 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 231.14 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a2fc2f27-e7c8-43c4-acb0-5922581e4364")
+		)
+		(pin "2"
+			(uuid "5c068f78-3393-40b5-afde-8f7fcfe45364")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "R6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 140.97 99.06 90)
 		(unit 1)
@@ -9507,6 +9576,72 @@
 			(project "zx"
 				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
 					(reference "#PWR018")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 227.33 57.15 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4b3e56c3-33ba-4131-9ce4-34c054a587cd")
+		(property "Reference" "#PWR033"
+			(at 220.98 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 222.25 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 227.33 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 227.33 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 227.33 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "678caa12-8a55-4eb6-8d9f-3585f8919970")
+		)
+		(instances
+			(project "zx"
+				(path "/e686a5db-35f9-40ca-bbb5-69eb58ec1522"
+					(reference "#PWR033")
 					(unit 1)
 				)
 			)

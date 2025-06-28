@@ -161,10 +161,11 @@ void GPIOInit(void)
 	// 1.3, 1.4, 1.5 are CH446Q ZX keyboard matrix DATA, SCLK, STROBE output,
 	// 1.6 are Kempston joystick JOY strobe output,
 	// 1.7 are keyboard activity LED output.
+	// Note: P0..P3 reset value is 1111 1111b, so Pn value must be reset before setting port to output to avoid ~500ns output high value strobe.
+	P1 = 0b00000000;	 // default pin states.
 	P1_DIR = 0xFF;
 	PORT_CFG &= ~bP1_OC; // push pull
 	P1_PU = 0x00;		 // no pullups
-	P1 = 0b00000000;	 // default pin states
 
 	// port2 setup
 	P2_DIR = 0b00000111; // 2.0, 2.1, 2.2 are GOTEK buttons outputs
