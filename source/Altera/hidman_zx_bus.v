@@ -134,7 +134,7 @@ module kempston_joy
 
 	// Port #1F/31 xxxxxxxx00011111 
 	//wire address_match = ~((A[5:0] == 6'h1F) & M1 & ~JOY_ENABLE);
-	wire address_match = ~(~A[7] & A[2] & A[1] & A[0] & M1 & ~JOY_ENABLE);
+	wire address_match = (A[7] | A[6] | A[5] | ~M1 | JOY_ENABLE);
 	assign IORQGE = address_match;
 	assign enable = ~(address_match | RD | IORQ);
 
@@ -274,10 +274,10 @@ module keyboard
 			keys[5] = 5'b11111;
 			keys[6] = 5'b11111;
 			keys[7] = 5'b11111;
-			// BSRQ, NMI, RST set to hi-Z on bus RESET
-			REG_PAUSE = 1;
-			REG_MAGIC = 1;
-			REG_RESET = 1;
+			// BSRQ, NMI, RST set to 0 on bus RESET
+			REG_PAUSE = 0;
+			REG_MAGIC = 0;
+			REG_RESET = 0;
 		end
 		else begin // posedge STB
 			if(AX[3] == 1'b1) // X = 8 for special keys.
@@ -288,14 +288,14 @@ module keyboard
 				if(AY == 3'b111 /*7*/) REG_PAUSE = key_state;
 			end
 			else
-				keys[AX][AY] = key_state;
+				keys[AX][AY] = !key_state;
 		end
 	end
 
-	// Output signal active low; 0 - hotkey pressed;
-	assign PAUSE = ~REG_PAUSE ? 1'b0 : 1'bZ;
-	assign MAGIC = ~REG_MAGIC ? 1'b0 : 1'bZ;
-	assign RESET = ~REG_RESET ? 1'b0 : 1'bZ;
+	// Special keys outputs drive BSS123 N-channel field effect transistor's gates
+	assign PAUSE = REG_PAUSE;
+	assign MAGIC = REG_MAGIC;
+	assign RESET = REG_RESET;
 /*
 	// Trade COMB(OR) for MUX in RTL map.
 	wire kd0, kd1, kd2, kd3, kd4;

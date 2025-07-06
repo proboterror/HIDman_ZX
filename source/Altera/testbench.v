@@ -235,20 +235,20 @@ initial begin
 	assert (D[4:0] === 5'b11111) else $error("Keyboard row [B..SP] reset failed.");
 
 	// AY, AX, state
-	keyboard_set_switch(3'h0, 3'h0, 0); // A8 [CS..V]
-	keyboard_set_switch(3'h1, 3'h1, 0); // A9 [A..G]
-	keyboard_set_switch(3'h2, 3'h2, 0); // A10 [Q..T]
+	keyboard_set_switch(3'h0, 3'h0, 1); // A8 [CS..V]
+	keyboard_set_switch(3'h1, 3'h1, 1); // A9 [A..G]
+	keyboard_set_switch(3'h2, 3'h2, 1); // A10 [Q..T]
 
-	keyboard_set_switch(3'h0, 3'h3, 1); // A11 [1..5]
-	keyboard_set_switch(3'h1, 3'h3, 0);
-	keyboard_set_switch(3'h2, 3'h3, 1);
-	keyboard_set_switch(3'h3, 3'h3, 0);
-	keyboard_set_switch(3'h4, 3'h3, 1);
+	keyboard_set_switch(3'h0, 3'h3, 0); // A11 [1..5]
+	keyboard_set_switch(3'h1, 3'h3, 1);
+	keyboard_set_switch(3'h2, 3'h3, 0);
+	keyboard_set_switch(3'h3, 3'h3, 1);
+	keyboard_set_switch(3'h4, 3'h3, 0);
 
-	keyboard_set_switch(3'h4, 3'h4, 0); // A12 [6..0]
-	keyboard_set_switch(3'h3, 3'h5, 0); // A13 [Y..P]
-	keyboard_set_switch(3'h2, 3'h6, 0); // A14 [H..Ent]
-	keyboard_set_switch(3'h1, 3'h7, 0); // A15 [B..SP]
+	keyboard_set_switch(3'h4, 3'h4, 1); // A12 [6..0]
+	keyboard_set_switch(3'h3, 3'h5, 1); // A13 [Y..P]
+	keyboard_set_switch(3'h2, 3'h6, 1); // A14 [H..Ent]
+	keyboard_set_switch(3'h1, 3'h7, 1); // A15 [B..SP]
 
 	// Read keyboard single rows
 	A = {8'b11111110, 8'hFE}; // [CS..V]
@@ -293,20 +293,20 @@ initial begin
 	ZX_KEY_RESET: Y:6 X:8
 	ZX_KEY_PAUSE: Y:7 X:8
 */
-	assert (NMI === 1'hZ) else $error("NMI active.");
-	assert (RST_OUT === 1'hZ) else $error("RST_OUT active.");
-	assert (BSRQ === 1'hZ) else $error("BSRQ active.");
+	assert (NMI === 1'h0) else $error("NMI active.");
+	assert (RST_OUT === 1'h0) else $error("RST_OUT active.");
+	assert (BSRQ === 1'h0) else $error("BSRQ active.");
 
 	// AY, AX, state
-	keyboard_set_switch(3'h5, 4'h8, 0);
+	keyboard_set_switch(3'h5, 4'h8, 1);
 	#10;
-	assert (NMI === 0) else $error("NMI set active failed.");
-	keyboard_set_switch(3'h6, 4'h8, 0);
+	assert (NMI === 1) else $error("NMI set active failed.");
+	keyboard_set_switch(3'h6, 4'h8, 1);
 	#10;
-	assert (RST_OUT === 0) else $error("RST_OUT set active failed.");
-	keyboard_set_switch(3'h7, 4'h8, 0);
+	assert (RST_OUT === 1) else $error("RST_OUT set active failed.");
+	keyboard_set_switch(3'h7, 4'h8, 1);
 	#10;
-	assert (BSRQ === 0) else $error("BSRQ set active failed.");
+	assert (BSRQ === 1) else $error("BSRQ set active failed.");
 end
 
 endmodule
