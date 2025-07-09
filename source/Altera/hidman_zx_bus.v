@@ -332,10 +332,10 @@ module keyboard
 	);
 */
 	// Port #FE/254 xxxxxxxx11111110
-	wire address_partial_match = ~((A[0] == 1'b0) & M1);
+	wire address_partial_match = (A[0] | RD | ~M1);
 	//wire address_partial_match = ~((A[7:0] == 8'hFE) & M1);
 	assign IORQGE = address_partial_match;
-	assign enable = ~(address_partial_match | RD | IORQ);
+	assign enable = ~(address_partial_match | IORQ);
 
 	assign D = half_rows_state;
 
