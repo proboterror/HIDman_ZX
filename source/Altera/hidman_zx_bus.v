@@ -113,7 +113,7 @@ module kempston_joy
 	input wire rst_in,
 
 	input wire JOY_ENABLE,
-
+	
 	output wire IORQGE,
 	output wire enable,
 
@@ -121,7 +121,7 @@ module kempston_joy
 );
 
 	reg[7:0] register_joy;
-/*
+
 	always @(negedge rst_in or posedge JOY)
 	begin
 		if(rst_in == 0)
@@ -129,8 +129,6 @@ module kempston_joy
 		else 
 			register_joy = DI;
 	end
-*/
-	always @(posedge JOY) register_joy = DI;
 
 	// Port #1F/31 xxxxxxxx00011111 
 	//wire address_match = ~((A[5:0] == 6'h1F) & M1 & ~JOY_ENABLE);
@@ -291,7 +289,7 @@ module keyboard
 				keys[AX][AY] = !key_state;
 		end
 	end
-
+	
 	// Special keys outputs drive BSS123 N-channel field effect transistor's gates
 	assign PAUSE = REG_PAUSE;
 	assign MAGIC = REG_MAGIC;
