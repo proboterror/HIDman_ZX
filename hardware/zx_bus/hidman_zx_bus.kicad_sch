@@ -12261,7 +12261,7 @@
 		)
 		(uuid "2f4ae71b-dba7-48ed-86da-a67d2eceb07a")
 	)
-	(label "DP_B"
+	(label "DM_B"
 		(at 184.15 148.59 180)
 		(fields_autoplaced yes)
 		(effects
@@ -13460,7 +13460,7 @@
 		)
 		(uuid "b27fd73f-63b8-46ba-a144-73a70ea1c3d4")
 	)
-	(label "DM_B"
+	(label "DP_B"
 		(at 203.2 148.59 0)
 		(fields_autoplaced yes)
 		(effects
