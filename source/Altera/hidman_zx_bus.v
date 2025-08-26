@@ -373,20 +373,20 @@ module hidman_zx_bus
 
 	kempston_mouse mouse(MX, MY, MKEY, DI, A, M1, RD, IORQ, RST_IN, iorqge_mouse, en_m, d_m);
 	keyboard key(DAT, SK, STB, A, M1, RD, IORQ, RST_IN, d_k, iorqge_keyboard, en_k, BSRQ, NMI, RST_OUT);
-	kempston_joy pad(JOY, DI, A, M1, RD, IORQ, RST_IN, JOY_ENABLE, iorqge_joy, en_j, d_j);
+	//kempston_joy pad(JOY, DI, A, M1, RD, IORQ, RST_IN, JOY_ENABLE, iorqge_joy, en_j, d_j);
 
 	// IORQGE = 0 when address lower bits and M1 == 1 (address partial match) else = 1.
 	// Connected to 74LVC1G125 3-state buffer OE/ pin, TTL 5V output.
 	assign IORQGE = 
 		iorqge_mouse &
-		iorqge_keyboard &
-		iorqge_joy;
+		iorqge_keyboard /*&
+		iorqge_joy*/;
 
 	// Is it correct to assign "1" value bits to open collector output?
 	assign D =
 		en_m ? d_m :
 		en_k ? {1'b1, 1'b1 /*TAPE_IN*/, 1'b1, d_k} : // TAPE IN on port #FE bit 6
-		en_j ? d_j :
+		//en_j ? d_j :
 		8'bZZZZZZZZ;
 
 endmodule
