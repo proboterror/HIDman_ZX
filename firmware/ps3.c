@@ -8,6 +8,7 @@
 Reference:
 https://github.com/felis/USB_Host_Shield_2.0/PS3USB.cpp 
 https://github.com/Slamy/Yaumataca/src/handlers/hid_ps3.cpp
+https://github.com/torvalds/linux/blob/master/drivers/hid/hid-sony.c
 
 VendorID: 0x054C
 ProductID: 0x0268
