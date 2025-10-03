@@ -14,7 +14,7 @@
 #include "ps2_mouse.h"
 #include "kempston_joy.h"
 #include "zx_keyboard.h"
-
+#include "sega_pad.h"
 
 uint8_t UsbUpdateCounter = 0;
 volatile uint32_t __data time_ms_32 = 0;
@@ -102,6 +102,7 @@ int main(void)
 	ps2_mouse_init_registers();
 	kempston_joy_init();
 	zx_keyboard_init();
+	sega_pad_init();
 
 	// timer0 setup
 	TMOD = (TMOD & 0xf0) | 0x02; // mode 1 (8bit auto reload)
@@ -131,6 +132,9 @@ int main(void)
 	{
 		// reset watchdog
 		SoftWatchdog = 0;
+
+		if(s_CheckUsbPort0)
+			sega_pad_update(); // Poll every 8 ms
 
 		ProcessUsbHostPort();
 		HandleMouse();

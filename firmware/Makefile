@@ -36,7 +36,8 @@ $(OBJDIR)/kempston_joy.rel \
 $(OBJDIR)/custom_handlers.rel \
 $(OBJDIR)/ps3.rel \
 $(OBJDIR)/xbox360_usb.rel \
-$(OBJDIR)/xbox_one.rel
+$(OBJDIR)/xbox_one.rel \
+$(OBJDIR)/sega_pad.rel
 
 COMMON += $(OBJDIR)/uart.rel
 COMMON += $(OBJDIR)/uart1.rel

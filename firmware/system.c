@@ -168,10 +168,10 @@ void GPIOInit(void)
 	P1_PU = 0x00;		 // no pullups
 
 	// port2 setup
-	P2_DIR = 0b00000111; // 2.0, 2.1, 2.2 are GOTEK buttons outputs
+	P2_DIR = 0b00001111; // 2.0, 2.1, 2.2 are GOTEK buttons outputs; 2.3 are Sega Mega Drive / Genesis controller SELECT pin
 	PORT_CFG |= bP2_OC;  // open collector
-	P2_PU = 0x00;		 // no pullups
-	P2 = 0b00000111;	 // GOTEK buttons off by default (i.e. high)
+	P2_PU = 0b00001000;		 // no pullups / pullup for Sega controller SELECT pin
+	P2 = 0b00000111;	 // GOTEK buttons off by default (i.e. high); Sega controller SELECT pin low by default
 
 	// port3 setup
 	P3_DIR = 0b00000010; // 2,3,4,5 are PS/2 mouse/keyboard i/o, 1 is UART0 TXD
@@ -180,9 +180,11 @@ void GPIOInit(void)
 	P3 = 0xFF;	 		 // default pin states
 
 	// port4 setup
-	P4_DIR = 0b00000000; // 4.6 is SWITCH
-	P4_PU = 0b01000000;	 // pullup on switch
-	P4_OUT = 0b00000000; // 
+	// 0,1,2,3,4,5 are Sega Mega Drive / Genesis controller data input, open collector with pullups.
+	// Note: P4 supports pure input and push-pull output modes only.
+	P4_DIR = 0b00000000;
+	P4_PU = 0b00111111;
+	P4_OUT = 0b00000000;
 }
 
 void ClockInit(void)

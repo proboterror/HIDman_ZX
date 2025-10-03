@@ -5,6 +5,8 @@
 #include "system.h"
 #include "gpio.h"
 
+#include "sega_pad.h"
+
 #define DI_PORT 0
 // 1.6 are Kempston joystick JOY strobe output
 #define JOY_PORT 1
@@ -37,7 +39,7 @@ void kempston_joy_update()
 	// Data written to register on rising_edge.
 	// Assume buttons register bits active level is high.
 	MJOY = 0;
-	PORT(DI_PORT) = joy_state;
+	PORT(DI_PORT) = joy_state | get_sega_pad_state();
 	_delay_us(DI_BUS_SET_DELAY);
 	MJOY = 1;
 	_delay_us(REGISTER_SET_DELAY);
