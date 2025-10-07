@@ -501,7 +501,7 @@ UINT8 TransferSend(ENDPOINT *pEndPoint, UINT8 *pData, UINT16 len, UINT16 timeout
 			pData++;
 		}
 
-		UINT8 result = USBHostTransact(USB_PID_OUT << 4 | (pEndPoint->EndpointAddr & 0x7F), UH_TX_CTRL, timeout);
+		UINT8 result = USBHostTransact(USB_PID_OUT << 4 | (pEndPoint->EndpointAddr & 0x7F), pEndPoint->TOG ? bUH_R_TOG | bUH_T_TOG : 0, timeout);
 
 		if (result != ERR_SUCCESS)
 		{
