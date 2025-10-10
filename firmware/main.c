@@ -140,7 +140,7 @@ int main(void)
 		HandleMouse();
 		
 		kempston_joy_update();
-		ps2_mouse_update();
+//		ps2_mouse_update();
 		zx_keyboard_update();
 	}
 }

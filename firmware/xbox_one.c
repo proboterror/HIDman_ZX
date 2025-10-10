@@ -92,7 +92,9 @@ supported_devices[] =
 	{0x045E, 0x0B12}, // Microsoft Xbox Series S|X Controller / Microsoft X-Box Core Controller (Model 1914)
 
 	{0x2dc8, 0x2000}, // 8BitDo Pro 2 Wired Controller fox Xbox
-	{0x2dc8, 0x200f} // 8BitDo Ultimate 3-mode Controller for Xbox
+	{0x2dc8, 0x200f}, // 8BitDo Ultimate 3-mode Controller for Xbox
+
+	{0x3537, 0x1010} // GameSir G7 SE
 };
 
 /*
@@ -558,6 +560,7 @@ bool xbox_one_init(USB_HUB_PORT *pUsbDevice, USB_CFG_DESCR *pCfgDescr, uint16_t 
 	SetUsbConfig(pUsbDevice, XBOX_ONE_DEFAULT_DEVICE_CONFIGURATION);
 
 	// Initialize the controller for input
+	// See also [MS-GIPUSB] 3.1.1 Abstract Data Model: Figure 6: GIP device state diagram
 
 	g_cmdCounter = 0; // Reset the counter used when sending out the commands
 
