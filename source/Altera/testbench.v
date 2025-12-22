@@ -8,7 +8,7 @@ reg[15:0] A;
 
 reg DAT, SK, STB;
 
-wire[7:0] D;
+tri1[7:0] D;
 wire IORQGE;
 
 wire BSRQ, NMI, RST_OUT; 
