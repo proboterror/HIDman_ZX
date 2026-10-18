@@ -14,520 +14,86 @@
 #include "data.h"
 #include "scancode.h"
 
+// Number Input, Usage Page, Input Usage, Output Channel, Output Control, InputType, Input Param
 __code JoyPreset KempstonJoyMaps[] = {
     // Buttons
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        1,                        // Input Usage
-        MAP_KEMPSTON,             // Output Channel
-        MAP_KEMPSTON_BUTTON1,     // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        2,                        // Input Usage
-        MAP_KEMPSTON,             // Output Channel
-        MAP_KEMPSTON_BUTTON2,     // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        3,                        // Input Usage
-        MAP_KEMPSTON,             // Output Channel
-        MAP_KEMPSTON_BUTTON3,     // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        4,                        // Input Usage
-        MAP_KEMPSTON,             // Output Channel
-        MAP_KEMPSTON_BUTTON4,     // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-
+    { 1, REPORT_USAGE_PAGE_BUTTON, 1, MAP_KEMPSTON, MAP_KEMPSTON_BUTTON1, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 2, MAP_KEMPSTON, MAP_KEMPSTON_BUTTON2, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 3, MAP_KEMPSTON, MAP_KEMPSTON_BUTTON3, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 4, MAP_KEMPSTON, MAP_KEMPSTON_BUTTON4, MAP_TYPE_THRESHOLD_ABOVE, 0 },
     // D-Pad / Left Analog
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_X,            // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_R,            // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE,  // InputType
-        192                        // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_X,            // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_L,            // Output Control
-        MAP_TYPE_THRESHOLD_BELOW,  // InputType
-        64                         // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_Y,            // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_D,            // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE,  // InputType
-        192                        // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_Y,            // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_U,            // Output Control
-        MAP_TYPE_THRESHOLD_BELOW,  // InputType
-        64                         // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_X, MAP_KEMPSTON, MAP_KEMPSTON_R, MAP_TYPE_THRESHOLD_ABOVE, 192 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_X, MAP_KEMPSTON, MAP_KEMPSTON_L, MAP_TYPE_THRESHOLD_BELOW, 64 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_Y, MAP_KEMPSTON, MAP_KEMPSTON_D, MAP_TYPE_THRESHOLD_ABOVE, 192 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_Y, MAP_KEMPSTON, MAP_KEMPSTON_U, MAP_TYPE_THRESHOLD_BELOW, 64 },
     // POV/HAT switch
     // 0 on hat switch, just press up
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_U,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        0                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_U, MAP_TYPE_EQUAL, 0 },
     // 1 on hatswitch, press up and right
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_U,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        1                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_R,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        1                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_U, MAP_TYPE_EQUAL, 1 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_R, MAP_TYPE_EQUAL, 1 },
     // 2 on hatswitch, press right
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_R,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        2                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_R, MAP_TYPE_EQUAL, 2 },
     // 3 on hat, press right and down
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_R,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        3                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_D,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        3                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_R, MAP_TYPE_EQUAL, 3 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_D, MAP_TYPE_EQUAL, 3 },
     // 4 on hat, press down
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_D,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        4                          // Input Param
-    },
-    // 5 on hat, press down and left
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_D,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        5                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_L,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        5                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_D, MAP_TYPE_EQUAL, 4 },
+    // 5 on hat, press down and lef
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_D, MAP_TYPE_EQUAL, 5 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_L, MAP_TYPE_EQUAL, 5 },
     // 6 on hat, press left
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_L,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        6                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_L, MAP_TYPE_EQUAL, 6 },
     // 7 on hat, press left and up
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_L,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        7                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEMPSTON,              // Output Channel
-        MAP_KEMPSTON_U,            // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        7                          // Input Param
-    },  
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_L, MAP_TYPE_EQUAL, 7 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEMPSTON, MAP_KEMPSTON_U, MAP_TYPE_EQUAL, 7 },
     // null to signify end
-    {
-        0, // Number
-        0, // Input Usage Page
-        0, // Input Usage
-        0, // Output Channel
-        0, // Output Control
-        0, // InputType
-        0  // Input Param
-    }
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 
 __code JoyPreset DefaultJoyMaps[] = {
-
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        1,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_A,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        2,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_B,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        3,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_C,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        4,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_D,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        5,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_E,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        6,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_F,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        7,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_G,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        8,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_H,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        9,                        // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_ESC,                  // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        10,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_ENTER,                // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        11,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_I,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        12,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_J,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        13,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_K,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        14,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_L,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        15,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_M,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                        // Number
-        REPORT_USAGE_PAGE_BUTTON, // Input Usage Page
-        16,                       // Input Usage
-        MAP_KEYBOARD,             // Output Channel
-        KEY_N,                    // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE, // InputType
-        0                         // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_X,            // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_RIGHT,                 // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE,  // InputType
-        192                        // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_X,            // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_LEFT,                  // Output Control
-        MAP_TYPE_THRESHOLD_BELOW,  // InputType
-        64                         // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_Y,            // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_DOWN,                  // Output Control
-        MAP_TYPE_THRESHOLD_ABOVE,  // InputType
-        192                        // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_Y,            // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_UP,                    // Output Control
-        MAP_TYPE_THRESHOLD_BELOW,  // InputType
-        64                         // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 1, MAP_KEYBOARD, KEY_A, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 2, MAP_KEYBOARD, KEY_B, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 3, MAP_KEYBOARD, KEY_C, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 4, MAP_KEYBOARD, KEY_D, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 5, MAP_KEYBOARD, KEY_E, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 6, MAP_KEYBOARD, KEY_F, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 7, MAP_KEYBOARD, KEY_G, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 8, MAP_KEYBOARD, KEY_H, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 9, MAP_KEYBOARD, KEY_ESC, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 10, MAP_KEYBOARD, KEY_ENTER, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 11, MAP_KEYBOARD, KEY_I, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 12, MAP_KEYBOARD, KEY_J, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 13, MAP_KEYBOARD, KEY_K, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 14, MAP_KEYBOARD, KEY_L, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 15, MAP_KEYBOARD, KEY_M, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_BUTTON, 16, MAP_KEYBOARD, KEY_N, MAP_TYPE_THRESHOLD_ABOVE, 0 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_X, MAP_KEYBOARD, KEY_RIGHT, MAP_TYPE_THRESHOLD_ABOVE, 192 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_X, MAP_KEYBOARD, KEY_LEFT, MAP_TYPE_THRESHOLD_BELOW, 64 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_Y, MAP_KEYBOARD, KEY_DOWN, MAP_TYPE_THRESHOLD_ABOVE, 192 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_Y, MAP_KEYBOARD, KEY_UP, MAP_TYPE_THRESHOLD_BELOW, 64 },
     // 0 on hat switch, just press up
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_UP,                    // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        0                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_UP, MAP_TYPE_EQUAL, 0 },
     // 1 on hatswitch, press up and right
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_UP,                    // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        1                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_RIGHT,                 // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        1                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_UP, MAP_TYPE_EQUAL, 1 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_RIGHT, MAP_TYPE_EQUAL, 1 },
     // 2 on hatswitch, press right
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_RIGHT,                 // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        2                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_RIGHT, MAP_TYPE_EQUAL, 2 },
     // 3 on hat, press right and down
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_RIGHT,                 // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        3                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_DOWN,                  // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        3                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_RIGHT, MAP_TYPE_EQUAL, 3 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_DOWN, MAP_TYPE_EQUAL, 3 },
     // 4 on hat, press down
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_DOWN,                  // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        4                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_DOWN, MAP_TYPE_EQUAL, 4 },
     // 5 on hat, press down and left
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_DOWN,                  // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        5                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_LEFT,                  // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        5                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_DOWN, MAP_TYPE_EQUAL, 5 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_LEFT, MAP_TYPE_EQUAL, 5 },
     // 6 on hat, press left
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_LEFT,                  // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        6                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_LEFT, MAP_TYPE_EQUAL, 6 },
     // 7 on hat, press left and up
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_LEFT,                  // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        7                          // Input Param
-    },
-    {
-        1,                         // Number
-        REPORT_USAGE_PAGE_GENERIC, // Usage Page
-        REPORT_USAGE_HATSWITCH,    // Usage
-        MAP_KEYBOARD,              // Output Channel
-        KEY_UP,                    // Output Control
-        MAP_TYPE_EQUAL,            // InputType
-        7                          // Input Param
-    },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_LEFT, MAP_TYPE_EQUAL, 7 },
+    { 1, REPORT_USAGE_PAGE_GENERIC, REPORT_USAGE_HATSWITCH, MAP_KEYBOARD, KEY_UP, MAP_TYPE_EQUAL, 7 },
     // null to signify end
-    {
-        0, // Number
-        0, // Input Usage Page
-        0, // Input Usage
-        0, // Output Channel
-        0, // Output Control
-        0, // InputType
-        0  // Input Param
-    },
-
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 
 __xdata uint8_t StandardKeyboardDescriptor[] = {
