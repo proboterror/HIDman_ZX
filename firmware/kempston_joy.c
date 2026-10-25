@@ -4,6 +4,11 @@
 #include "type.h"
 #include "system.h"
 #include "gpio.h"
+#include "defs.h"
+
+#include "scancode.h"
+#include "usbhidkeys.h"
+#include "ps2_keyboard.h"
 
 #include "sega_pad.h"
 
@@ -26,11 +31,45 @@ void kempston_joy_init()
 	// Assume DI_PORT set to PIN_MODE_OUTPUT in ps2_mouse_init_registers()
 
 	pinMode(JOY_PORT, JOY_PIN, PIN_MODE_OUTPUT);
+	MJOY = 0;
 }
 
 void kempston_joy_set(uint8_t state)
 {
+	// Kempston Joystick to HID mapping.
+	// Conversion chain: HID key code / state => PS/2 key make / break code => PS/2 keyboard buffer => zx_keyboard_update => CH446Q_set
+	// Also can be mapped to much cheaper zx_keyboard => CH446Q_set
+	static const uint8_t mapping[8] = {
+		KEY_RIGHT,
+		KEY_LEFT,
+		KEY_DOWN,
+		KEY_UP,
+		KEY_A,
+		KEY_B,
+		KEY_C,
+		KEY_D
+	};
+
+	uint8_t changed = state ^ joy_state;
+
 	joy_state = state;
+
+	for(uint8_t i = 0; i < 8; i++)
+	{
+		if(changed & 0x01)
+		{
+			const uint8_t hid_code = mapping[i];
+			const bool pressed = state & 0x01;
+
+			if(pressed)
+				ps2_add_raw_code(HIDtoSET2_Make[hid_code]);
+			else
+				ps2_add_raw_code(HIDtoSET2_Break[hid_code]);
+		}
+
+		changed >>= 1;
+		state >>= 1;
+	}
 }
 
 void kempston_joy_update()
