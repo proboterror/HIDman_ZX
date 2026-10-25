@@ -10,6 +10,7 @@
 #include "data.h"
 #include "settings.h"
 #include "andyalloc.h"
+#include "keyboardled.h"
 #include "parsedescriptor.h"
 #include "ps2protocol.h"
 #include "usbll.h"
