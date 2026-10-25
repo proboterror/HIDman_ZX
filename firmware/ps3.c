@@ -50,6 +50,8 @@ B1 02 C0 C0
 
 extern uint8_t g_shared_packed_buffer[EP_MAXPKTSIZE]; // General purpose buffer for input data
 
+static uint8_t g_pointer_buttons;
+
 typedef struct
 {
 	uint8_t reserved1[2];
@@ -108,7 +110,9 @@ void ps3_usb_setup_reception(USB_HUB_PORT *pUsbDevice, uint8_t interface)
 	s = HostCtrlTransfer(&SetupReq, pUsbDevice->MaxPacketSize0, enable_command, &len);
 }
 
-uint8_t ps3_usb_parse_report(void* report, uint8_t length, uint8_t* gamepad_state)
+extern int8_t compute_stick_delta(uint8_t stick_val);
+
+uint8_t ps3_usb_parse_report(void* report, uint8_t length, gamepad_state_t* gamepad_state)
 {
 	const ps3_hid_report_t* r = (ps3_hid_report_t*)report;
 
@@ -124,7 +128,19 @@ uint8_t ps3_usb_parse_report(void* report, uint8_t length, uint8_t* gamepad_stat
 	state |= r->button_square << MAP_KEMPSTON_BUTTON3;
 	state |= r->button_triangle << MAP_KEMPSTON_BUTTON4;
 
-	*gamepad_state = state;
+	gamepad_state->pad_buttons = state;
+
+	// Map left analog stick to pointer delta.
+	gamepad_state->pointer_delta_x += compute_stick_delta(r->joy_left_x);
+	gamepad_state->pointer_delta_y += compute_stick_delta(r->joy_left_y);
+
+	// Map L1 and R1 buttons as mouse left / right buttons.
+	const uint8_t pointer_buttons = r->trigger_l1 | r->trigger_r1 << 1;
+
+	gamepad_state->pointer_buttons = pointer_buttons;
+	gamepad_state->pointer_buttons_changed = pointer_buttons ^ g_pointer_buttons;
+
+	g_pointer_buttons = pointer_buttons;
 
 	return true;
 }
@@ -140,7 +156,7 @@ bool ps3_usb_poll(USB_HUB_PORT *pUsbDevice, gamepad_state_t* gamepad_state)
 
 	if (result == ERR_SUCCESS)
 	{
-		return ps3_usb_parse_report(g_shared_packed_buffer, len, &gamepad_state->pad_buttons);
+		return ps3_usb_parse_report(g_shared_packed_buffer, len, gamepad_state);
 	}
 
 	return false;
@@ -167,6 +183,8 @@ bool ps3_usb_init(USB_HUB_PORT *pUsbDevice, USB_CFG_DESCR *pCfgDescr, uint16_t l
 	SetUsbConfig(pUsbDevice, pCfgDescr->bConfigurationValue);
 
 	ps3_usb_setup_reception(pUsbDevice, INTERFACE_NUMBER);
+
+	g_pointer_buttons = 0;
 
 	DEBUGOUT("\nSony DualShock 3");
 
