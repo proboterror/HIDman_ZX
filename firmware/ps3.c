@@ -85,6 +85,8 @@ typedef struct
 	uint8_t joy_left_y;
 	uint8_t joy_right_x;
 	uint8_t joy_right_y;
+
+	// The rest of report structure skipped (48 bytes total)
 } ps3_hid_report_t;
 
 bool ps3_usb_match(uint16_t vendor_id, uint16_t product_id)
@@ -112,37 +114,42 @@ void ps3_usb_setup_reception(USB_HUB_PORT *pUsbDevice, uint8_t interface)
 
 extern int8_t compute_stick_delta(uint8_t stick_val);
 
-uint8_t ps3_usb_parse_report(void* report, uint8_t length, gamepad_state_t* gamepad_state)
+bool ps3_usb_parse_report(void* report, uint16_t length, gamepad_state_t* gamepad_state)
 {
-	const ps3_hid_report_t* r = (ps3_hid_report_t*)report;
+	if(length == 48) // DualShock 3 USB full input report size
+	{
+		const ps3_hid_report_t* r = (ps3_hid_report_t*)report;
 
-	uint8_t state = 0;
-	
-	state |= r->dpad_left << MAP_KEMPSTON_L;
-	state |= r->dpad_down << MAP_KEMPSTON_D;
-	state |= r->dpad_right << MAP_KEMPSTON_R;
-	state |= r->dpad_up << MAP_KEMPSTON_U;
+		uint8_t state = 0;
+		
+		state |= r->dpad_left << MAP_KEMPSTON_L;
+		state |= r->dpad_down << MAP_KEMPSTON_D;
+		state |= r->dpad_right << MAP_KEMPSTON_R;
+		state |= r->dpad_up << MAP_KEMPSTON_U;
 
-	state |= r->button_cross << MAP_KEMPSTON_BUTTON1;
-	state |= r->button_circle << MAP_KEMPSTON_BUTTON2;
-	state |= r->button_square << MAP_KEMPSTON_BUTTON3;
-	state |= r->button_triangle << MAP_KEMPSTON_BUTTON4;
+		state |= r->button_cross << MAP_KEMPSTON_BUTTON1;
+		state |= r->button_circle << MAP_KEMPSTON_BUTTON2;
+		state |= r->button_square << MAP_KEMPSTON_BUTTON3;
+		state |= r->button_triangle << MAP_KEMPSTON_BUTTON4;
 
-	gamepad_state->pad_buttons = state;
+		gamepad_state->pad_buttons = state;
 
-	// Map left analog stick to pointer delta.
-	gamepad_state->pointer_delta_x += compute_stick_delta(r->joy_left_x);
-	gamepad_state->pointer_delta_y += compute_stick_delta(r->joy_left_y);
+		// Map left analog stick to pointer delta.
+		gamepad_state->pointer_delta_x += compute_stick_delta(r->joy_left_x);
+		gamepad_state->pointer_delta_y += compute_stick_delta(r->joy_left_y);
 
-	// Map L1 and R1 buttons as mouse left / right buttons.
-	const uint8_t pointer_buttons = r->trigger_l1 | r->trigger_r1 << 1;
+		// Map L1 and R1 buttons as mouse left / right buttons.
+		const uint8_t pointer_buttons = r->trigger_l1 | r->trigger_r1 << 1;
 
-	gamepad_state->pointer_buttons = pointer_buttons;
-	gamepad_state->pointer_buttons_changed = pointer_buttons ^ g_pointer_buttons;
+		gamepad_state->pointer_buttons = pointer_buttons;
+		gamepad_state->pointer_buttons_changed = pointer_buttons ^ g_pointer_buttons;
 
-	g_pointer_buttons = pointer_buttons;
+		g_pointer_buttons = pointer_buttons;
 
-	return true;
+		return true;
+	}
+	else
+		return false;
 }
 
 bool ps3_usb_poll(USB_HUB_PORT *pUsbDevice, gamepad_state_t* gamepad_state)
