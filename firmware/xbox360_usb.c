@@ -417,6 +417,7 @@ bool xbox360_usb_poll(USB_HUB_PORT *pUsbDevice, gamepad_state_t* gamepad_state)
 	uint8_t result = TransferReceive(&endpoints[XBOX_INPUT_PIPE], xbox360_read_buf, &len, 0);
 	if (result == ERR_SUCCESS)
 	{
+		// Note: Xbox 360 USB controller reports state only if state changed (mostly caused by sticks drift when idle).
 		return xbox360_usb_parse_report(xbox360_read_buf, len, &gamepad_state->pad_buttons);
 	}
 
