@@ -109,6 +109,7 @@ module kempston_joy
 	input wire M1, // 1
 	input wire RD, // active low
 	input wire IORQ, // active low
+	input wire DOS, // active low
 
 	input wire rst_in,
 
@@ -132,7 +133,7 @@ module kempston_joy
 
 	// Port #1F/31 xxxxxxxx00011111 
 	//wire address_match = ~((A[5:0] == 6'h1F) & M1 & ~JOY_ENABLE);
-	wire address_match = (A[7] | A[6] | A[5] | ~M1 | JOY_ENABLE);
+	wire address_match = (A[7] | A[6] | A[5] | ~M1 | ~DOS | JOY_ENABLE);
 	assign IORQGE = address_match;
 	assign enable = ~(address_match | RD | IORQ);
 
@@ -330,7 +331,7 @@ module keyboard
 	);
 */
 	// Port #FE/254 xxxxxxxx11111110
-	wire address_partial_match = (A[0] | RD | ~M1);
+	wire address_partial_match = (A[0] | RD | ~M1); // ToDo: A0=0 A1=1 (A2=1) for Nemo IDE https://t.me/pentagon1024zp/1/46546 @DDV81
 	//wire address_partial_match = ~((A[7:0] == 8'hFE) & M1);
 	assign IORQGE = address_partial_match;
 	assign enable = ~(address_partial_match | IORQ);
@@ -352,6 +353,7 @@ module hidman_zx_bus
 
 	input wire [15:0] A,
 	input wire M1, // 1
+	input wire DOS, // active low
 	input wire RD, // active low
 	input wire IORQ, // active low
 	input wire RST_IN,
@@ -373,7 +375,7 @@ module hidman_zx_bus
 
 	kempston_mouse mouse(MX, MY, MKEY, DI, A, M1, RD, IORQ, RST_IN, iorqge_mouse, en_m, d_m);
 	keyboard key(DAT, SK, STB, A, M1, RD, IORQ, RST_IN, d_k, iorqge_keyboard, en_k, BSRQ, NMI, RST_OUT);
-	kempston_joy pad(JOY, DI, A, M1, RD, IORQ, RST_IN, JOY_ENABLE, iorqge_joy, en_j, d_j);
+	kempston_joy pad(JOY, DI, A, M1, RD, IORQ, DOS, RST_IN, JOY_ENABLE, iorqge_joy, en_j, d_j);
 
 	// IORQGE = 0 when address lower bits and M1 == 1 (address partial match) else = 1.
 	// Connected to 74LVC1G125 3-state buffer OE/ pin, TTL 5V output.
