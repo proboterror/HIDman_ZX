@@ -35,6 +35,8 @@ $(OBJDIR)/gotek_buttons.rel \
 $(OBJDIR)/kempston_joy.rel \
 $(OBJDIR)/custom_handlers.rel \
 $(OBJDIR)/ps3.rel \
+$(OBJDIR)/ps4.rel \
+$(OBJDIR)/ps5.rel \
 $(OBJDIR)/xbox360_usb.rel \
 $(OBJDIR)/xbox_one.rel \
 $(OBJDIR)/sega_pad.rel

@@ -11,6 +11,8 @@
 #include "usbhost.h"
 #include "usbll.h"
 
+#include "custom_handlers.h"
+
 /*
 Reference:
 [MS-GIPUSB]: Gaming Input Protocol (GIP) Universal Serial Bus (USB) Extension
@@ -207,9 +209,6 @@ enum gip_device_state
 
 #define GIP_PL_LEN(N) (N) // GIP message payload length encoded with https://en.wikipedia.org/wiki/LEB128 which is a no-op for N < 128
 
-// Xbox One data taken from descriptors
-#define XBOX_ONE_EP_MAXPKTSIZE 64 // Max size for data via USB
-
 // Names we give to the 3 XboxONE pipes
 #define XBOX_ONE_CONTROL_PIPE 0
 #define XBOX_ONE_OUTPUT_PIPE 1
@@ -255,7 +254,12 @@ typedef struct
 	int16_t stick_right_y;
 } xbox_one_report;
 
-uint8_t xbox_one_read_buf[XBOX_ONE_EP_MAXPKTSIZE]; // General purpose buffer for input data
+// Xbox One data taken from descriptors
+#define XBOX_ONE_EP_MAXPKTSIZE 64 // Max size for data via USB
+
+// ToDo: static assert XBOX_ONE_EP_MAXPKTSIZE = sizeof(g_shared_packed_buffer)
+extern uint8_t g_shared_packed_buffer[XBOX_ONE_EP_MAXPKTSIZE]; // General purpose buffer for input data
+
 uint8_t g_cmdCounter = 0; // GIP Sequence ID for outcoming GIP messages
 uint8_t g_pollInterval = 0; // Typical polling interval / rate is up to 4 ms / 250 Hz.
 
@@ -300,7 +304,7 @@ bool xbox_one_parse_report(void* report, uint8_t length, uint8_t* gamepad_state)
 	return false;
 }
 
-bool xbox_one_poll(USB_HUB_PORT *pUsbDevice, uint8_t* gamepad_state)
+bool xbox_one_poll(USB_HUB_PORT *pUsbDevice, gamepad_state_t* gamepad_state)
 {
 	// Get dummy device interface 0
 	INTERFACE* currInt = (INTERFACE*)(pUsbDevice->Interfaces->data);
@@ -309,11 +313,11 @@ bool xbox_one_poll(USB_HUB_PORT *pUsbDevice, uint8_t* gamepad_state)
 	// ToDo: take account on g_pollInterval. Main loop checks USB devices every 8 ms.
 
 	uint16_t len = 0;
-	uint8_t result = TransferReceive(&endpoints[XBOX_ONE_INPUT_PIPE], xbox_one_read_buf, &len, 0);
+	uint8_t result = TransferReceive(&endpoints[XBOX_ONE_INPUT_PIPE], g_shared_packed_buffer, &len, 0);
 	if (result == ERR_SUCCESS)
 	{
 		// Report sent only on changed gamepad controls state.
-		return xbox_one_parse_report(xbox_one_read_buf, len, gamepad_state);
+		return xbox_one_parse_report(g_shared_packed_buffer, len, &gamepad_state->pad_buttons);
 	}
 
 	return false;
@@ -446,7 +450,7 @@ enum gip_gamepad_motor
 	GIP_GP_MOTOR_LT = BIT(3),
 };
 
-int gip_send_rumble(USB_HUB_PORT *pUsbDevice)
+void gip_send_rumble(USB_HUB_PORT *pUsbDevice)
 {
 	uint8_t rumble_command[] = 
 	{
@@ -529,10 +533,12 @@ bool xbox_one_init(USB_HUB_PORT *pUsbDevice, USB_CFG_DESCR *pCfgDescr, uint16_t 
 					const bool is_input = (pEdpDescr->bEndpointAddress & USB_ENDP_DIR_MASK);
 					const uint8_t endpoint_index = is_input ? XBOX_ONE_INPUT_PIPE : XBOX_ONE_OUTPUT_PIPE; // Set the endpoint index
 
-					endpoints[endpoint_index].EndpointAddr = pEdpDescr->bEndpointAddress & 0x0F;
-					endpoints[endpoint_index].MaxPacketSize = pEdpDescr->wMaxPacketSizeL | (pEdpDescr->wMaxPacketSizeH << 8);
-					endpoints[endpoint_index].EndpointDir = is_input ? ENDPOINT_IN : ENDPOINT_OUT;
-					endpoints[endpoint_index].TOG = FALSE;
+					ENDPOINT* endpoint = &endpoints[endpoint_index];
+		
+					endpoint->EndpointAddr = pEdpDescr->bEndpointAddress & USB_ENDP_ADDR_MASK;
+					endpoint->MaxPacketSize = pEdpDescr->wMaxPacketSizeL | (pEdpDescr->wMaxPacketSizeH << 8);
+					endpoint->EndpointDir = is_input ? ENDPOINT_IN : ENDPOINT_OUT;
+					endpoint->TOG = FALSE;
 
 					if(g_pollInterval < pEdpDescr->bInterval) // Set the polling interval as the largest polling interval obtained from endpoints
 						g_pollInterval = pEdpDescr->bInterval;
@@ -581,12 +587,15 @@ bool xbox_one_init(USB_HUB_PORT *pUsbDevice, USB_CFG_DESCR *pCfgDescr, uint16_t 
 	{0x045E, 0x02EA}, // Microsoft X-Box One S pad
 	{0x045E, 0x0B00}, // Microsoft X-Box One Elite 2 pad
 */
-	uint8_t xboxone_s_init[] = {GIP_CMD_POWER, GIP_OPT_INTERNAL, GIP_SEQ0, GIP_PL_LEN(15), 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-	if (xbox_one_command(pUsbDevice, xboxone_s_init, sizeof(xboxone_s_init)))
+	if ((pUsbDevice->VendorID == 0x045E) && (pUsbDevice->ProductID == 0x02ea || pUsbDevice->ProductID == 0x0b00))
 	{
-		DEBUGOUT("xboxone_s_init error");
-		return false;
+		uint8_t xboxone_s_init[] = {GIP_CMD_POWER, GIP_OPT_INTERNAL, GIP_SEQ0, GIP_PL_LEN(15), 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x53, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+		if (xbox_one_command(pUsbDevice, xboxone_s_init, sizeof(xboxone_s_init)))
+		{
+			DEBUGOUT("xboxone_s_init error");
+			return false;
+		}
 	}
 
 	uint8_t extra_input_packet_init[] = {0x4d, 0x10, GIP_SEQ0, 0x02, 0x07, 0x00};

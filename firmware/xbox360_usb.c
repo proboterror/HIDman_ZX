@@ -11,6 +11,8 @@
 #include "usbhost.h"
 #include "usbll.h"
 
+#include "custom_handlers.h"
+
 /*
 Reference:
 https://github.com/felis/USB_Host_Shield_2.0/blob/master/XBOXUSB.cpp
@@ -405,7 +407,7 @@ bool xbox360_usb_parse_report(void* report, uint8_t length, uint8_t* gamepad_sta
 	return false;
 }
 
-bool xbox360_usb_poll(USB_HUB_PORT *pUsbDevice, uint8_t* gamepad_state)
+bool xbox360_usb_poll(USB_HUB_PORT *pUsbDevice, gamepad_state_t* gamepad_state)
 {
 	// Get dummy device interface 0
 	INTERFACE* currInt = (INTERFACE*)(pUsbDevice->Interfaces->data);
@@ -415,7 +417,7 @@ bool xbox360_usb_poll(USB_HUB_PORT *pUsbDevice, uint8_t* gamepad_state)
 	uint8_t result = TransferReceive(&endpoints[XBOX_INPUT_PIPE], xbox360_read_buf, &len, 0);
 	if (result == ERR_SUCCESS)
 	{
-		return xbox360_usb_parse_report(xbox360_read_buf, len, gamepad_state);
+		return xbox360_usb_parse_report(xbox360_read_buf, len, &gamepad_state->pad_buttons);
 	}
 
 	return false;

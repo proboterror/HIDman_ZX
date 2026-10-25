@@ -4,6 +4,8 @@
 #include "usbhost.h"
 #include "usbll.h"
 
+#include "custom_handlers.h"
+
 /*
 Reference:
 https://github.com/felis/USB_Host_Shield_2.0/PS3USB.cpp 
@@ -46,7 +48,7 @@ B1 02 C0 C0
 #define PS3_OUTPUT_PIPE 1
 #define PS3_INPUT_PIPE 2
 
-uint8_t ps3_readBuf[EP_MAXPKTSIZE]; // General purpose buffer for input data
+extern uint8_t g_shared_packed_buffer[EP_MAXPKTSIZE]; // General purpose buffer for input data
 
 typedef struct
 {
@@ -127,18 +129,18 @@ uint8_t ps3_usb_parse_report(void* report, uint8_t length, uint8_t* gamepad_stat
 	return true;
 }
 
-bool ps3_usb_poll(USB_HUB_PORT *pUsbDevice, uint8_t* gamepad_state)
+bool ps3_usb_poll(USB_HUB_PORT *pUsbDevice, gamepad_state_t* gamepad_state)
 {
 	// Get dummy device interface 0
 	INTERFACE* currInt = (INTERFACE*)(pUsbDevice->Interfaces->data);
-	ENDPOINT* endpoints = currInt->Endpoint;
+	ENDPOINT* endpoint = currInt->Endpoint;
 
 	uint16_t len = 0;
-	uint8_t result = TransferReceive(&endpoints[PS3_INPUT_PIPE], ps3_readBuf, &len, 0);
-	DEBUGOUT("%ui ", len);
+	uint8_t result = TransferReceive(endpoint, g_shared_packed_buffer, &len, 0);
+
 	if (result == ERR_SUCCESS)
 	{
-		return ps3_usb_parse_report(ps3_readBuf, len, gamepad_state);
+		return ps3_usb_parse_report(g_shared_packed_buffer, len, &gamepad_state->pad_buttons);
 	}
 
 	return false;
@@ -146,31 +148,23 @@ bool ps3_usb_poll(USB_HUB_PORT *pUsbDevice, uint8_t* gamepad_state)
 
 bool ps3_usb_init(USB_HUB_PORT *pUsbDevice, USB_CFG_DESCR *pCfgDescr, uint16_t len)
 {
-	(void)pCfgDescr;
 	(void)len;
 
 	const UINT8 INTERFACE_NUMBER = 0;
 
 	pUsbDevice->Interfaces = ListAdd(pUsbDevice->Interfaces, sizeof(INTERFACE), INTERFACE_NUMBER);
-	static INTERFACE * __xdata currInt;
-	currInt = (INTERFACE*)(pUsbDevice->Interfaces->data);
+	INTERFACE* currInt = (INTERFACE*)(pUsbDevice->Interfaces->data);
 	InitInterface(currInt);
 
 	pUsbDevice->InterfaceNum++;
 
-	ENDPOINT* endpoints = currInt->Endpoint;
+	ENDPOINT* endpoint = currInt->Endpoint; // store one and only input endpoint
 
-	// Initialize data structures for endpoints of device
-	endpoints[PS3_OUTPUT_PIPE].EndpointAddr = 0x02; // PS3 output endpoint
-	endpoints[PS3_OUTPUT_PIPE].MaxPacketSize = EP_MAXPKTSIZE;
-	endpoints[PS3_OUTPUT_PIPE].EndpointDir = ENDPOINT_OUT;
+	endpoint->EndpointAddr = 0x01; // PS3 report input endpoint
+	endpoint->MaxPacketSize = EP_MAXPKTSIZE;
+	endpoint->EndpointDir = ENDPOINT_IN;
 
-	endpoints[PS3_INPUT_PIPE].EndpointAddr = 0x01; // PS3 report endpoint
-	endpoints[PS3_INPUT_PIPE].MaxPacketSize = EP_MAXPKTSIZE;
-	endpoints[PS3_INPUT_PIPE].EndpointDir = ENDPOINT_IN;
-
-	const uint8_t PS3_DEFAULT_DEVICE_CONFIGURATION = 1; 
-	SetUsbConfig(pUsbDevice, PS3_DEFAULT_DEVICE_CONFIGURATION);
+	SetUsbConfig(pUsbDevice, pCfgDescr->bConfigurationValue);
 
 	ps3_usb_setup_reception(pUsbDevice, INTERFACE_NUMBER);
 

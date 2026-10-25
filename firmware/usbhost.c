@@ -10,14 +10,12 @@
 #include "data.h"
 #include "settings.h"
 #include "andyalloc.h"
-#include "keyboardled.h"
 #include "parsedescriptor.h"
 #include "ps2protocol.h"
 #include "usbll.h"
 #include "preset.h"
 
 #include "custom_handlers.h"
-#include "kempston_joy.h"
 
 #define RECEIVE_BUFFER_LEN 512
 UINT8X ReceiveDataBuffer[RECEIVE_BUFFER_LEN];
@@ -332,15 +330,7 @@ UINT8 HIDDataTransferReceive(USB_HUB_PORT *pUsbDevice)
 	
 	if (hahdler)
 	{
-		uint8_t gamepad_state = 0;
-
-		if (hahdler->poll(pUsbDevice, &gamepad_state))
-		{
-			kempston_joy_set(gamepad_state);
-
-			if(gamepad_state)
-				setLED(false);
-		}
+		process_handler(hahdler, pUsbDevice);
 
 		return ERR_SUCCESS;
 	}
@@ -466,10 +456,12 @@ BOOL EnumerateHubPort(__xdata USB_HUB_PORT *pUsbHubPort, UINT8 addr)
 
 	if (handler)
 	{
-		pUsbHubPort->UserData = (void*)handler;
-		handler->init(pUsbDevice, (USB_CFG_DESCR *)ReceiveDataBuffer, len);
+		const bool result = handler->init(pUsbDevice, (USB_CFG_DESCR *)ReceiveDataBuffer, len);
 
-		return true;
+		if(result)
+			pUsbHubPort->UserData = (void*)handler;
+
+		return result;
 	}
 
 	//parse config descriptor
